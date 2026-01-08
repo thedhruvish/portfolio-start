@@ -13,6 +13,10 @@ import { Route as EditorTestRouteImport } from './routes/editor-test'
 import { Route as WebRouteRouteImport } from './routes/_web/route'
 import { Route as WebIndexRouteImport } from './routes/_web/index'
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
+import { Route as WebProjectsIndexRouteImport } from './routes/_web/projects/index'
+import { Route as WebBlogsIndexRouteImport } from './routes/_web/blogs/index'
+import { Route as WebProjectsSlugRouteImport } from './routes/_web/projects/$slug'
+import { Route as WebBlogsSlugRouteImport } from './routes/_web/blogs/$slug'
 
 const EditorTestRoute = EditorTestRouteImport.update({
   id: '/editor-test',
@@ -33,16 +37,44 @@ const WebContactUsRoute = WebContactUsRouteImport.update({
   path: '/contact-us',
   getParentRoute: () => WebRouteRoute,
 } as any)
+const WebProjectsIndexRoute = WebProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => WebRouteRoute,
+} as any)
+const WebBlogsIndexRoute = WebBlogsIndexRouteImport.update({
+  id: '/blogs/',
+  path: '/blogs/',
+  getParentRoute: () => WebRouteRoute,
+} as any)
+const WebProjectsSlugRoute = WebProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
+  getParentRoute: () => WebRouteRoute,
+} as any)
+const WebBlogsSlugRoute = WebBlogsSlugRouteImport.update({
+  id: '/blogs/$slug',
+  path: '/blogs/$slug',
+  getParentRoute: () => WebRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
   '/': typeof WebIndexRoute
+  '/blogs/$slug': typeof WebBlogsSlugRoute
+  '/projects/$slug': typeof WebProjectsSlugRoute
+  '/blogs': typeof WebBlogsIndexRoute
+  '/projects': typeof WebProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
   '/': typeof WebIndexRoute
+  '/blogs/$slug': typeof WebBlogsSlugRoute
+  '/projects/$slug': typeof WebProjectsSlugRoute
+  '/blogs': typeof WebBlogsIndexRoute
+  '/projects': typeof WebProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -50,13 +82,40 @@ export interface FileRoutesById {
   '/editor-test': typeof EditorTestRoute
   '/_web/contact-us': typeof WebContactUsRoute
   '/_web/': typeof WebIndexRoute
+  '/_web/blogs/$slug': typeof WebBlogsSlugRoute
+  '/_web/projects/$slug': typeof WebProjectsSlugRoute
+  '/_web/blogs/': typeof WebBlogsIndexRoute
+  '/_web/projects/': typeof WebProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/editor-test' | '/contact-us' | '/'
+  fullPaths:
+    | '/editor-test'
+    | '/contact-us'
+    | '/'
+    | '/blogs/$slug'
+    | '/projects/$slug'
+    | '/blogs'
+    | '/projects'
   fileRoutesByTo: FileRoutesByTo
-  to: '/editor-test' | '/contact-us' | '/'
-  id: '__root__' | '/_web' | '/editor-test' | '/_web/contact-us' | '/_web/'
+  to:
+    | '/editor-test'
+    | '/contact-us'
+    | '/'
+    | '/blogs/$slug'
+    | '/projects/$slug'
+    | '/blogs'
+    | '/projects'
+  id:
+    | '__root__'
+    | '/_web'
+    | '/editor-test'
+    | '/_web/contact-us'
+    | '/_web/'
+    | '/_web/blogs/$slug'
+    | '/_web/projects/$slug'
+    | '/_web/blogs/'
+    | '/_web/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,17 +153,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebContactUsRouteImport
       parentRoute: typeof WebRouteRoute
     }
+    '/_web/projects/': {
+      id: '/_web/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof WebProjectsIndexRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
+    '/_web/blogs/': {
+      id: '/_web/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs'
+      preLoaderRoute: typeof WebBlogsIndexRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
+    '/_web/projects/$slug': {
+      id: '/_web/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof WebProjectsSlugRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
+    '/_web/blogs/$slug': {
+      id: '/_web/blogs/$slug'
+      path: '/blogs/$slug'
+      fullPath: '/blogs/$slug'
+      preLoaderRoute: typeof WebBlogsSlugRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
   }
 }
 
 interface WebRouteRouteChildren {
   WebContactUsRoute: typeof WebContactUsRoute
   WebIndexRoute: typeof WebIndexRoute
+  WebBlogsSlugRoute: typeof WebBlogsSlugRoute
+  WebProjectsSlugRoute: typeof WebProjectsSlugRoute
+  WebBlogsIndexRoute: typeof WebBlogsIndexRoute
+  WebProjectsIndexRoute: typeof WebProjectsIndexRoute
 }
 
 const WebRouteRouteChildren: WebRouteRouteChildren = {
   WebContactUsRoute: WebContactUsRoute,
   WebIndexRoute: WebIndexRoute,
+  WebBlogsSlugRoute: WebBlogsSlugRoute,
+  WebProjectsSlugRoute: WebProjectsSlugRoute,
+  WebBlogsIndexRoute: WebBlogsIndexRoute,
+  WebProjectsIndexRoute: WebProjectsIndexRoute,
 }
 
 const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(

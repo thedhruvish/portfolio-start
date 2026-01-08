@@ -12,7 +12,7 @@ import { projectList } from '@/config/projects'
 export const Projects = () => {
   const projects = projectList
   return (
-    <section className="mt-20">
+    <section id="projects" className="mt-20 scroll-mt-24">
       {/* Section Header */}
       <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
         <h2 className="text-3xl font-bold tracking-tight md:text-4xl">

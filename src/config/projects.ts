@@ -22,6 +22,7 @@ export type Project = {
 export const projectList: Array<Project> = [
   {
     title: 'Storage Web App',
+    image: 'https://assets.aceternity.com/templates/Foxtrot.png',
     description:
       'A modern, full-stack web application for secure file storage, sharing, and management with a Google Drive-like interface.',
     github: 'https://github.com/thedhruvish/storage-web-app',
@@ -46,6 +47,7 @@ export const projectList: Array<Project> = [
   },
   {
     title: 'YOUcs',
+    image: 'https://assets.aceternity.com/templates/Foxtrot.png', 
     description:
       'Master any conversation. YOUcs provides AI-driven practice and instant feedback to boost your speaking confidence.',
     link: 'https://YOUcs.dhruvish.in',
@@ -66,6 +68,7 @@ export const projectList: Array<Project> = [
   },
   {
     title: 'Do Not Code',
+    image: 'https://assets.aceternity.com/templates/Foxtrot.png',
     description: 'Your productivity partner for meaningful breaks.',
     link: 'https://do-not-code.dhruvish.in/',
     tech: [
