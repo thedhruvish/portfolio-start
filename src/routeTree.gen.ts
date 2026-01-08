@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as EditorTestRouteImport } from './routes/editor-test'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as WebRouteRouteImport } from './routes/_web/route'
+import { Route as AuthIndexRouteImport } from './routes/auth/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WebIndexRouteImport } from './routes/_web/index'
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
 import { Route as WebProjectsIndexRouteImport } from './routes/_web/projects/index'
@@ -23,9 +26,24 @@ const EditorTestRoute = EditorTestRouteImport.update({
   path: '/editor-test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WebRouteRoute = WebRouteRouteImport.update({
   id: '/_web',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/auth/',
+  path: '/auth/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const WebIndexRoute = WebIndexRouteImport.update({
   id: '/',
@@ -59,9 +77,12 @@ const WebBlogsSlugRoute = WebBlogsSlugRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/admin': typeof AdminRouteRouteWithChildren
   '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
   '/': typeof WebIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/auth': typeof AuthIndexRoute
   '/blogs/$slug': typeof WebBlogsSlugRoute
   '/projects/$slug': typeof WebProjectsSlugRoute
   '/blogs': typeof WebBlogsIndexRoute
@@ -71,6 +92,8 @@ export interface FileRoutesByTo {
   '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
   '/': typeof WebIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/auth': typeof AuthIndexRoute
   '/blogs/$slug': typeof WebBlogsSlugRoute
   '/projects/$slug': typeof WebProjectsSlugRoute
   '/blogs': typeof WebBlogsIndexRoute
@@ -79,9 +102,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_web': typeof WebRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/editor-test': typeof EditorTestRoute
   '/_web/contact-us': typeof WebContactUsRoute
   '/_web/': typeof WebIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/_web/blogs/$slug': typeof WebBlogsSlugRoute
   '/_web/projects/$slug': typeof WebProjectsSlugRoute
   '/_web/blogs/': typeof WebBlogsIndexRoute
@@ -90,9 +116,12 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/admin'
     | '/editor-test'
     | '/contact-us'
     | '/'
+    | '/admin/'
+    | '/auth'
     | '/blogs/$slug'
     | '/projects/$slug'
     | '/blogs'
@@ -102,6 +131,8 @@ export interface FileRouteTypes {
     | '/editor-test'
     | '/contact-us'
     | '/'
+    | '/admin'
+    | '/auth'
     | '/blogs/$slug'
     | '/projects/$slug'
     | '/blogs'
@@ -109,9 +140,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_web'
+    | '/admin'
     | '/editor-test'
     | '/_web/contact-us'
     | '/_web/'
+    | '/admin/'
+    | '/auth/'
     | '/_web/blogs/$slug'
     | '/_web/projects/$slug'
     | '/_web/blogs/'
@@ -120,7 +154,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   WebRouteRoute: typeof WebRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   EditorTestRoute: typeof EditorTestRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -132,12 +168,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorTestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_web': {
       id: '/_web'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof WebRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/auth/': {
+      id: '/auth/'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_web/': {
       id: '/_web/'
@@ -206,9 +263,23 @@ const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(
   WebRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   WebRouteRoute: WebRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   EditorTestRoute: EditorTestRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

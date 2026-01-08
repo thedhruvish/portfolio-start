@@ -47,7 +47,7 @@ export const projectList: Array<Project> = [
   },
   {
     title: 'YOUcs',
-    image: 'https://assets.aceternity.com/templates/Foxtrot.png', 
+    image: 'https://assets.aceternity.com/templates/Foxtrot.png',
     description:
       'Master any conversation. YOUcs provides AI-driven practice and instant feedback to boost your speaking confidence.',
     link: 'https://YOUcs.dhruvish.in',
