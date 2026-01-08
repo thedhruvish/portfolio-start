@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { Link } from '@tanstack/react-router'
 import Github from './svgs/Github'
 import {
   Tooltip,
@@ -19,12 +20,12 @@ export const Projects = () => {
           Projects
         </h2>
 
-        {/* <a
-          href="/projects"
+        <Link
+          to="/projects"
           className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           View all projects →
-        </a> */}
+        </Link>
       </div>
 
       {/* Project List */}
