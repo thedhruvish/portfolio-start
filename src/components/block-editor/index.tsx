@@ -22,6 +22,7 @@ import Toolbar, { DefaultToolbarRender } from '@yoopta/toolbar'
 import { HeadingOne, HeadingThree, HeadingTwo } from '@yoopta/headings'
 import { useMemo, useRef } from 'react'
 import ImageYoopta from '@yoopta/image'
+import { cn } from '@/lib/utils'
 
 const plugins = [
   Paragraph,
@@ -62,6 +63,7 @@ interface BlockEditorProps {
   value?: any
   onChange?: (value: any) => void
   readOnly?: boolean
+  className?: string
 }
 
 export const useBlockEditor = () => {
@@ -74,6 +76,7 @@ export function BlockEditor({
   onChange,
   readOnly = false,
   editor: propEditor,
+  className,
 }: BlockEditorProps & { editor?: any }) {
   const defaultEditor = useBlockEditor()
   const editor = propEditor || defaultEditor
@@ -81,7 +84,10 @@ export function BlockEditor({
 
   return (
     <div
-      className="yoopta-editor-container border rounded-md p-4 min-h-[400px] w-full"
+      className={cn(
+        'yoopta-editor-container border rounded-md p-4 min-h-[400px] w-full',
+        className,
+      )}
       ref={selectionRef}
     >
       <YooptaEditor

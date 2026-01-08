@@ -2,9 +2,10 @@ import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { useRouter } from '@tanstack/react-router'
-import { Plus, X } from 'lucide-react'
+import { Maximize2, Minimize2, Plus, X } from 'lucide-react'
 import { useState } from 'react'
 import { Switch } from './ui/switch'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -38,6 +39,7 @@ export function BlogForm({
 }) {
   const router = useRouter()
   const [tagInput, setTagInput] = useState('')
+  const [isFullScreen, setIsFullScreen] = useState(false)
 
   const form = useForm({
     defaultValues: initialValues || {
@@ -123,7 +125,6 @@ export function BlogForm({
           )}
         />
       </div>
-
       <form.Field
         name="description"
         children={(field) => (
@@ -139,7 +140,6 @@ export function BlogForm({
           </ShadcnField>
         )}
       />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <form.Field
           name="thumbImage"
@@ -172,7 +172,6 @@ export function BlogForm({
           )}
         />
       </div>
-
       <form.Field
         name="tags"
         children={(field) => (
@@ -230,7 +229,6 @@ export function BlogForm({
           </ShadcnField>
         )}
       />
-
       <form.Field
         name="published"
         children={(field) => (
@@ -247,16 +245,39 @@ export function BlogForm({
       <form.Field
         name="content"
         children={(field) => (
-          <div className="space-y-2">
-            <ShadcnFieldLabel>Content</ShadcnFieldLabel>
+          <div
+            className={cn(
+              'space-y-2',
+              isFullScreen &&
+                'fixed inset-0 z-50 bg-background p-6 h-screen w-screen overflow-y-auto',
+            )}
+          >
+            <div className="flex items-center justify-between">
+              <ShadcnFieldLabel>Content</ShadcnFieldLabel>
+              <Button
+                variant="ghost"
+                size="sm"
+                type="button"
+                onClick={() => setIsFullScreen(!isFullScreen)}
+                title={isFullScreen ? 'Exit Full Screen' : 'Full Screen'}
+              >
+                {isFullScreen ? (
+                  <Minimize2 className="h-4 w-4" />
+                ) : (
+                  <Maximize2 className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
             <BlockEditor
               value={field.state.value}
               onChange={(val) => field.handleChange(val)}
+              className={
+                isFullScreen ? 'min-h-[calc(100vh-100px)] border-none' : ''
+              }
             />
           </div>
         )}
       />
-
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
         children={([canSubmit, isSubmitting]) => (
