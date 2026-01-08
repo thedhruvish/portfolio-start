@@ -10,42 +10,57 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as EditorTestRouteImport } from './routes/editor-test'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as WebRouteRouteImport } from './routes/_web/route'
+import { Route as WebIndexRouteImport } from './routes/_web/index'
+import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
 
 const EditorTestRoute = EditorTestRouteImport.update({
   id: '/editor-test',
   path: '/editor-test',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const WebRouteRoute = WebRouteRouteImport.update({
+  id: '/_web',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WebIndexRoute = WebIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => WebRouteRoute,
+} as any)
+const WebContactUsRoute = WebContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
+  getParentRoute: () => WebRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/editor-test': typeof EditorTestRoute
+  '/contact-us': typeof WebContactUsRoute
+  '/': typeof WebIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/editor-test': typeof EditorTestRoute
+  '/contact-us': typeof WebContactUsRoute
+  '/': typeof WebIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_web': typeof WebRouteRouteWithChildren
   '/editor-test': typeof EditorTestRoute
+  '/_web/contact-us': typeof WebContactUsRoute
+  '/_web/': typeof WebIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/editor-test'
+  fullPaths: '/editor-test' | '/contact-us' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/editor-test'
-  id: '__root__' | '/' | '/editor-test'
+  to: '/editor-test' | '/contact-us' | '/'
+  id: '__root__' | '/_web' | '/editor-test' | '/_web/contact-us' | '/_web/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  WebRouteRoute: typeof WebRouteRouteWithChildren
   EditorTestRoute: typeof EditorTestRoute
 }
 
@@ -58,18 +73,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorTestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_web': {
+      id: '/_web'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof WebRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_web/': {
+      id: '/_web/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof WebIndexRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
+    '/_web/contact-us': {
+      id: '/_web/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof WebContactUsRouteImport
+      parentRoute: typeof WebRouteRoute
     }
   }
 }
 
+interface WebRouteRouteChildren {
+  WebContactUsRoute: typeof WebContactUsRoute
+  WebIndexRoute: typeof WebIndexRoute
+}
+
+const WebRouteRouteChildren: WebRouteRouteChildren = {
+  WebContactUsRoute: WebContactUsRoute,
+  WebIndexRoute: WebIndexRoute,
+}
+
+const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(
+  WebRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  WebRouteRoute: WebRouteRouteWithChildren,
   EditorTestRoute: EditorTestRoute,
 }
 export const routeTree = rootRouteImport
