@@ -1,0 +1,298 @@
+import { useState } from 'react'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { useForm } from '@tanstack/react-form'
+import { z } from 'zod'
+import { toast } from 'sonner'
+import { Pencil, Plus, Trash2, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Field as ShadcnField,
+  FieldError as ShadcnFieldError,
+  FieldLabel as ShadcnFieldLabel,
+} from '@/components/ui/field'
+import {
+  createProjectFn,
+  deleteProjectFn,
+  getProjectsFn,
+  updateProjectFn,
+} from '@/functions/admin'
+
+export const Route = createFileRoute('/admin/projects')({
+  loader: async () => {
+    const projects = await getProjectsFn()
+    return { projects }
+  },
+  component: AdminProjects,
+})
+
+const ProjectSchema = z.object({
+  id: z.number().optional(),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  image: z.string().optional(),
+  github: z.string().optional(),
+  link: z.string().optional(),
+  tech: z
+    .array(
+      z.object({
+        name: z.string(),
+        icon: z.string(),
+      }),
+    )
+    .optional(),
+})
+
+type ProjectFormValues = z.infer<typeof ProjectSchema>
+
+function AdminProjects() {
+  const { projects } = Route.useLoaderData()
+  const router = useRouter()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingProject, setEditingProject] =
+    useState<ProjectFormValues | null>(null)
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this project?')) return
+    try {
+      await deleteProjectFn({ data: id })
+      toast.success('Project deleted')
+      router.invalidate()
+    } catch (error) {
+      toast.error('Failed to delete project')
+    }
+  }
+
+  const handleEdit = (project: any) => {
+    setEditingProject(project)
+    setIsDialogOpen(true)
+  }
+
+  const handleCreate = () => {
+    setEditingProject(null)
+    setIsDialogOpen(true)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
+        <Button onClick={handleCreate}>
+          <Plus className="mr-2 h-4 w-4" /> Add Project
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map((project) => (
+          <Card key={project.id} className="flex flex-col">
+            {project.image && (
+              <div className="aspect-video w-full overflow-hidden rounded-t-xl border-b">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
+            <CardHeader>
+              <CardTitle className="line-clamp-1">{project.title}</CardTitle>
+              <CardDescription className="line-clamp-2">
+                {project.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="mt-auto pt-0 flex justify-end gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleEdit(project)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={() => handleDelete(project.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open)
+          if (!open) setEditingProject(null)
+        }}
+      >
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingProject ? 'Edit Project' : 'Add Project'}
+            </DialogTitle>
+          </DialogHeader>
+          <ProjectForm
+            initialValues={
+              editingProject || {
+                title: '',
+                description: '',
+                image: '',
+                github: '',
+                link: '',
+                tech: [],
+              }
+            }
+            onSubmit={async () => {
+              setIsDialogOpen(false)
+              router.invalidate()
+            }}
+          />
+        </DialogContent>
+      </Dialog>
+    </div>
+  )
+}
+
+function ProjectForm({
+  initialValues,
+  onSubmit,
+}: {
+  initialValues: ProjectFormValues
+  onSubmit: () => Promise<void>
+}) {
+  const form = useForm({
+    defaultValues: initialValues,
+    validators: {
+      onSubmit: ProjectSchema,
+    },
+    onSubmit: async ({ value }) => {
+      try {
+        if (value.id) {
+          await updateProjectFn({ data: value })
+          toast.success('Project updated')
+        } else {
+          await createProjectFn({ data: value })
+          toast.success('Project created')
+        }
+        await onSubmit()
+      } catch (error) {
+        toast.error('Failed to save project')
+        console.error(error)
+      }
+    },
+  })
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        form.handleSubmit()
+      }}
+      className="space-y-4"
+    >
+      <form.Field
+        name="title"
+        children={(field) => (
+          <ShadcnField className="gap-2">
+            <ShadcnFieldLabel>Title</ShadcnFieldLabel>
+            <Input
+              name={field.name}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+            <ShadcnFieldError errors={field.state.meta.errors} />
+          </ShadcnField>
+        )}
+      />
+
+      <form.Field
+        name="description"
+        children={(field) => (
+          <ShadcnField className="gap-2">
+            <ShadcnFieldLabel>Description</ShadcnFieldLabel>
+            <Textarea
+              name={field.name}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+            <ShadcnFieldError errors={field.state.meta.errors} />
+          </ShadcnField>
+        )}
+      />
+
+      <form.Field
+        name="image"
+        children={(field) => (
+          <ShadcnField className="gap-2">
+            <ShadcnFieldLabel>Image URL</ShadcnFieldLabel>
+            <Input
+              name={field.name}
+              value={field.state.value || ''}
+              onBlur={field.handleBlur}
+              onChange={(e) => field.handleChange(e.target.value)}
+            />
+          </ShadcnField>
+        )}
+      />
+
+      <div className="grid grid-cols-2 gap-4">
+        <form.Field
+          name="github"
+          children={(field) => (
+            <ShadcnField className="gap-2">
+              <ShadcnFieldLabel>GitHub URL</ShadcnFieldLabel>
+              <Input
+                name={field.name}
+                value={field.state.value || ''}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </ShadcnField>
+          )}
+        />
+        <form.Field
+          name="link"
+          children={(field) => (
+            <ShadcnField className="gap-2">
+              <ShadcnFieldLabel>Live Link</ShadcnFieldLabel>
+              <Input
+                name={field.name}
+                value={field.state.value || ''}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </ShadcnField>
+          )}
+        />
+      </div>
+
+      <form.Subscribe
+        selector={(state) => [state.canSubmit, state.isSubmitting]}
+        children={([canSubmit, isSubmitting]) => (
+          <Button type="submit" disabled={!canSubmit} className="w-full">
+            {isSubmitting ? 'Saving...' : 'Save Project'}
+          </Button>
+        )}
+      />
+    </form>
+  )
+}

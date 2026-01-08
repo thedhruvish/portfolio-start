@@ -15,6 +15,9 @@ import { Route as WebRouteRouteImport } from './routes/_web/route'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WebIndexRouteImport } from './routes/_web/index'
+import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
+import { Route as AdminProfileRouteImport } from './routes/admin/profile'
+import { Route as AdminBlogsRouteImport } from './routes/admin/blogs'
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
 import { Route as WebProjectsIndexRouteImport } from './routes/_web/projects/index'
 import { Route as WebBlogsIndexRouteImport } from './routes/_web/blogs/index'
@@ -50,6 +53,21 @@ const WebIndexRoute = WebIndexRouteImport.update({
   path: '/',
   getParentRoute: () => WebRouteRoute,
 } as any)
+const AdminProjectsRoute = AdminProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminProfileRoute = AdminProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminBlogsRoute = AdminBlogsRouteImport.update({
+  id: '/blogs',
+  path: '/blogs',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const WebContactUsRoute = WebContactUsRouteImport.update({
   id: '/contact-us',
   path: '/contact-us',
@@ -80,6 +98,9 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
+  '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/projects': typeof AdminProjectsRoute
   '/': typeof WebIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
@@ -91,6 +112,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
+  '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/projects': typeof AdminProjectsRoute
   '/': typeof WebIndexRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
@@ -105,6 +129,9 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/editor-test': typeof EditorTestRoute
   '/_web/contact-us': typeof WebContactUsRoute
+  '/admin/blogs': typeof AdminBlogsRoute
+  '/admin/profile': typeof AdminProfileRoute
+  '/admin/projects': typeof AdminProjectsRoute
   '/_web/': typeof WebIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
@@ -119,6 +146,9 @@ export interface FileRouteTypes {
     | '/admin'
     | '/editor-test'
     | '/contact-us'
+    | '/admin/blogs'
+    | '/admin/profile'
+    | '/admin/projects'
     | '/'
     | '/admin/'
     | '/auth'
@@ -130,6 +160,9 @@ export interface FileRouteTypes {
   to:
     | '/editor-test'
     | '/contact-us'
+    | '/admin/blogs'
+    | '/admin/profile'
+    | '/admin/projects'
     | '/'
     | '/admin'
     | '/auth'
@@ -143,6 +176,9 @@ export interface FileRouteTypes {
     | '/admin'
     | '/editor-test'
     | '/_web/contact-us'
+    | '/admin/blogs'
+    | '/admin/profile'
+    | '/admin/projects'
     | '/_web/'
     | '/admin/'
     | '/auth/'
@@ -202,6 +238,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof WebIndexRouteImport
       parentRoute: typeof WebRouteRoute
+    }
+    '/admin/projects': {
+      id: '/admin/projects'
+      path: '/projects'
+      fullPath: '/admin/projects'
+      preLoaderRoute: typeof AdminProjectsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/profile': {
+      id: '/admin/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminProfileRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/blogs': {
+      id: '/admin/blogs'
+      path: '/blogs'
+      fullPath: '/admin/blogs'
+      preLoaderRoute: typeof AdminBlogsRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_web/contact-us': {
       id: '/_web/contact-us'
@@ -264,10 +321,16 @@ const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(
 )
 
 interface AdminRouteRouteChildren {
+  AdminBlogsRoute: typeof AdminBlogsRoute
+  AdminProfileRoute: typeof AdminProfileRoute
+  AdminProjectsRoute: typeof AdminProjectsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminBlogsRoute: AdminBlogsRoute,
+  AdminProfileRoute: AdminProfileRoute,
+  AdminProjectsRoute: AdminProjectsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
