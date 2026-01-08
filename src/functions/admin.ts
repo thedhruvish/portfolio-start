@@ -1,8 +1,8 @@
 import { createServerFn } from '@tanstack/react-start'
-import { eq } from 'drizzle-orm'
+import { desc, eq, like, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
-import { profile, projects } from '@/db/schema'
+import { blogs, profile, projects, tags } from '@/db/schema'
 
 const ProfileSchema = z.object({
   name: z.string().min(1),
@@ -85,5 +85,142 @@ export const deleteProjectFn = createServerFn({ method: 'POST' })
   .inputValidator((data: number) => z.number().parse(data))
   .handler(async ({ data: id }) => {
     await db.delete(projects).where(eq(projects.id, id))
+    return { success: true }
+  })
+
+const BlogSchema = z.object({
+  id: z.number().optional(),
+  title: z.string().min(1),
+  slug: z.string().min(1),
+  description: z.string().optional(),
+  thumbImage: z.string().optional(),
+  content: z.any().optional(), // Using any for Yoopta JSON
+  published: z.boolean().default(false),
+  order: z.number().default(0),
+  tags: z.array(z.string()).default([]),
+})
+
+export const getBlogsFn = createServerFn({ method: 'GET' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        page: z.number().default(1),
+        pageSize: z.number().default(10),
+        search: z.string().optional(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data: { page, pageSize, search } }) => {
+    const offset = (page - 1) * pageSize
+
+    let whereClause = undefined
+    if (search) {
+      whereClause = like(blogs.title, `%${search}%`)
+    }
+
+    const result = await db
+      .select({
+        id: blogs.id,
+        title: blogs.title,
+        slug: blogs.slug,
+        published: blogs.published,
+        createdAt: blogs.createdAt,
+        updatedAt: blogs.updatedAt,
+      })
+      .from(blogs)
+      .where(whereClause)
+      .orderBy(desc(blogs.createdAt))
+      .limit(pageSize)
+      .offset(offset)
+
+    // Get total count
+    const [{ count }] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(blogs)
+      .where(whereClause)
+
+    return {
+      data: result,
+      total: Number(count),
+      page,
+      pageSize,
+      totalPages: Math.ceil(Number(count) / pageSize),
+    }
+  })
+
+export const getBlogFn = createServerFn({ method: 'GET' })
+  .inputValidator((data: number) => z.number().parse(data))
+  .handler(async ({ data: id }) => {
+    const blog = await db.query.blogs.findFirst({
+      where: eq(blogs.id, id),
+    })
+
+    if (!blog) return null
+
+    const blogTags = await db
+      .select({ tag: tags.tag })
+      .from(tags)
+      .where(eq(tags.blogId, id))
+
+    return {
+      ...blog,
+      content: blog.content as any, // Cast jsonb unknown to any
+      tags: blogTags.map((t) => t.tag),
+    }
+  })
+
+export const createBlogFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => BlogSchema.omit({ id: true }).parse(data))
+  .handler(async ({ data }) => {
+    const { tags: tagList, ...blogData } = data
+
+    const [newBlog] = await db
+      .insert(blogs)
+      .values(blogData)
+      .returning({ id: blogs.id })
+
+    if (tagList.length > 0) {
+      await db.insert(tags).values(
+        tagList.map((tag) => ({
+          tag,
+          blogId: newBlog.id,
+        })),
+      )
+    }
+
+    return { success: true }
+  })
+
+export const updateBlogFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => BlogSchema.parse(data))
+  .handler(async ({ data }) => {
+    if (!data.id) throw new Error('ID required for update')
+    const { tags: tagList, ...blogData } = data
+
+    // Update blog
+    await db
+      .update(blogs)
+      .set({ ...blogData, updatedAt: new Date() })
+      .where(eq(blogs.id, data.id))
+
+    // Update tags: delete all and re-insert
+    await db.delete(tags).where(eq(tags.blogId, data.id))
+
+    if (tagList.length > 0) {
+      await db.insert(tags).values(
+        tagList.map((tag) => ({
+          tag,
+          blogId: data.id,
+        })),
+      )
+    }
+
+    return { success: true }
+  })
+
+export const deleteBlogFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: number) => z.number().parse(data))
+  .handler(async ({ data: id }) => {
+    await db.delete(blogs).where(eq(blogs.id, id))
     return { success: true }
   })

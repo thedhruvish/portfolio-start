@@ -29,6 +29,7 @@ export function CommandMenu() {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
+        // eslint-disable-next-line no-shadow
         setOpen((open) => !open)
       }
     }

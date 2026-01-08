@@ -189,7 +189,7 @@ function ProjectForm({
   onSubmit,
 }: {
   initialValues: ProjectFormValues
-  onSubmit: () => Promise<void>
+  onSubmit: () => void
 }) {
   const form = useForm({
     defaultValues: initialValues,
@@ -417,6 +417,7 @@ function TechStackSelector({
                       <Check
                         className={cn(
                           'mr-2 h-4 w-4',
+                          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                           isSelected ? 'opacity-100' : 'opacity-0',
                         )}
                       />

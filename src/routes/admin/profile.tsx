@@ -38,15 +38,15 @@ function AdminProfile() {
 
   const form = useForm({
     defaultValues: {
-      name: profile?.name || '',
-      headline: profile?.headline || '',
-      description: profile?.description || '',
-      image: profile?.image || '',
-      resumeLink: profile?.resumeLink || '',
-      twitter: profile?.twitter || '',
-      github: profile?.github || '',
-      linkedin: profile?.linkedin || '',
-      email: profile?.email || '',
+      name: profile.name || '',
+      headline: profile.headline || '',
+      description: profile.description || '',
+      image: profile.image || '',
+      resumeLink: profile.resumeLink || '',
+      twitter: profile.twitter || '',
+      github: profile.github || '',
+      linkedin: profile.linkedin || '',
+      email: profile.email || '',
     },
     validators: {
       onSubmit: profileSchema,

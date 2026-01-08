@@ -33,19 +33,19 @@ export function ThemeProvider({
   useEffect(() => {
     const root = document.documentElement
 
-    const applyTheme = (theme: Theme) => {
+    const applyTheme = (themeNew: Theme) => {
       // ✅ MUST remove every time
       root.classList.remove('light')
       root.classList.remove('dark')
 
-      if (theme === 'system') {
+      if (themeNew === 'system') {
         root.classList.add(
           window.matchMedia('(prefers-color-scheme: dark)').matches
             ? 'dark'
             : 'light',
         )
       } else {
-        root.classList.add(theme)
+        root.classList.add(themeNew)
       }
     }
 

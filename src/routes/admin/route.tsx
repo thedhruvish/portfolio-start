@@ -12,7 +12,7 @@ export const Route = createFileRoute('/admin')({
       throw redirect({ to: '/auth' })
     }
   },
-  ssr: false, 
+  ssr: false,
   component: RouteComponent,
 })
 
