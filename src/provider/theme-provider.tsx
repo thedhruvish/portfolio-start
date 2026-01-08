@@ -13,64 +13,73 @@ type ThemeProviderState = {
   setTheme: (theme: Theme) => void
 }
 
-const initialState: ThemeProviderState = {
-  theme: 'system',
-  setTheme: () => null,
-}
-
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
+  undefined,
+)
 
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
   storageKey = 'vite-ui-theme',
-  ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
-  )
+  const [theme, setTheme] = useState<Theme>(defaultTheme)
+
+  // Load stored theme (client only)
+  useEffect(() => {
+    const storedTheme = localStorage.getItem(storageKey) as Theme | null
+    if (storedTheme) setTheme(storedTheme)
+  }, [storageKey])
 
   useEffect(() => {
-    const root = window.document.documentElement
+    const root = document.documentElement
 
-    root.classList.remove('light', 'dark')
+    const applyTheme = (theme: Theme) => {
+      // ✅ MUST remove every time
+      root.classList.remove('light')
+      root.classList.remove('dark')
 
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-        .matches
-        ? 'dark'
-        : 'light'
-
-      root.classList.add(systemTheme)
-      return
+      if (theme === 'system') {
+        root.classList.add(
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light',
+        )
+      } else {
+        root.classList.add(theme)
+      }
     }
 
-    root.classList.add(theme)
+    applyTheme(theme)
+
+    // 🔒 Only listen to system changes in system mode
+    if (theme !== 'system') return
+
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const onChange = () => applyTheme('system')
+
+    media.addEventListener('change', onChange)
+    return () => media.removeEventListener('change', onChange)
   }, [theme])
 
-  const value = {
+  const value: ThemeProviderState = {
     theme,
-    // eslint-disable-next-line no-shadow
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
+    setTheme: (newTheme: Theme) => {
+      localStorage.setItem(storageKey, newTheme)
+      setTheme(newTheme)
     },
   }
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext.Provider value={value}>
       {children}
     </ThemeProviderContext.Provider>
   )
 }
 
-export const useTheme = () => {
+export function useTheme() {
   const context = useContext(ThemeProviderContext)
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (context === undefined)
+  if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider')
-
+  }
   return context
 }
