@@ -3,8 +3,23 @@ import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { toast } from 'sonner'
-import { Pencil, Plus, Trash2, X } from 'lucide-react'
+import { Check, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
 import {
   Card,
   CardContent,
@@ -158,7 +173,7 @@ function AdminProjects() {
                 tech: [],
               }
             }
-            onSubmit={async () => {
+            onSubmit={() => {
               setIsDialogOpen(false)
               router.invalidate()
             }}
@@ -285,6 +300,16 @@ function ProjectForm({
         />
       </div>
 
+      <form.Field
+        name="tech"
+        children={(field) => (
+          <TechStackSelector
+            value={field.state.value}
+            onChange={(val) => field.handleChange(val)}
+          />
+        )}
+      />
+
       <form.Subscribe
         selector={(state) => [state.canSubmit, state.isSubmitting]}
         children={([canSubmit, isSubmitting]) => (
@@ -294,5 +319,116 @@ function ProjectForm({
         )}
       />
     </form>
+  )
+}
+
+function TechStackSelector({
+  value = [],
+  onChange,
+}: {
+  value?: Array<{ name: string; icon: string }> | null
+  onChange: (val: Array<{ name: string; icon: string }>) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const availableTech = [
+    'AWS',
+    'Appwrite',
+    'BootStrap',
+    'Bun',
+    'CSS',
+    'ExpoApp',
+    'ExpressJs',
+    'Figma',
+    'Github',
+    'Html',
+    'JavaScript',
+    'MDXIcon',
+    'MongoDB',
+    'Motion',
+    'NestJs',
+    'Netlify',
+    'NextJs',
+    'NodeJs',
+    'PostgreSQL',
+    'Postman',
+    'Prisma',
+    'ReactIcon',
+    'Sanity',
+    'Shadcn',
+    'SocketIo',
+    'TailwindCss',
+    'ThreeJs',
+    'TypeScript',
+    'Vercel',
+  ]
+
+  return (
+    <ShadcnField className="gap-2">
+      <ShadcnFieldLabel>Tech Stack</ShadcnFieldLabel>
+      <div className="flex flex-wrap gap-2 mb-2">
+        {value?.map((tech) => (
+          <Badge key={tech.name} variant="secondary" className="gap-1">
+            {tech.name}
+            <button
+              type="button"
+              onClick={() => {
+                onChange(value.filter((t) => t.name !== tech.name))
+              }}
+              className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+            </button>
+          </Badge>
+        ))}
+      </div>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between"
+          >
+            Select technologies...
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-full p-0">
+          <Command>
+            <CommandInput placeholder="Search tech..." />
+            <CommandList>
+              <CommandEmpty>No tech found.</CommandEmpty>
+              <CommandGroup>
+                {availableTech.map((techName) => {
+                  const isSelected = value?.some((t) => t.name === techName)
+                  if (isSelected) return null
+                  return (
+                    <CommandItem
+                      key={techName}
+                      value={techName}
+                      onSelect={() => {
+                        onChange([
+                          ...(value || []),
+                          { name: techName, icon: techName },
+                        ])
+                        setOpen(false)
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          isSelected ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                      {techName}
+                    </CommandItem>
+                  )
+                })}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </ShadcnField>
   )
 }
