@@ -7,7 +7,6 @@ import Container from '@/components/Container'
 import { getPublicBlogBySlugFn } from '@/functions/blogs'
 import { Badge } from '@/components/ui/badge'
 
-
 export const Route = createFileRoute('/_web/blogs/$slug')({
   component: BlogDetailComponent,
   loader: async ({ params: { slug } }) => {
