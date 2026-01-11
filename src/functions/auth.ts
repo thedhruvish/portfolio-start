@@ -15,7 +15,7 @@ const LoginInput = z.object({
 
 const COOKIE_NAME = 'Auth'
 
-const isValidTurnstileToken = createIsomorphicFn().server(
+export const isValidTurnstileToken = createIsomorphicFn().server(
   async (turnstileToken: string) => {
     const formData = new FormData()
     formData.append('secret', process.env.TURNSTILE_SECRET_KEY!)
