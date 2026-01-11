@@ -68,7 +68,7 @@ export const logoutFn = createServerFn().handler(() => {
 
 export const checkAuthFn = createServerFn().handler(() => {
   const cookie = getCookie(COOKIE_NAME)
-  console.log(cookie)
+
   if (!cookie) {
     return false
   }
