@@ -12,3 +12,5 @@ export const profile = pgTable('profile', {
   linkedin: text('linkedin'),
   email: text('email'),
 })
+
+export type UserProfile = typeof profile.$inferSelect

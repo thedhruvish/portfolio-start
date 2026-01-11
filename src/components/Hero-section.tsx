@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
+import type { UserProfile } from '@/db/schema/profile'
 import { CONFIG } from '@/config/config'
 
 const containerVariants = {
@@ -23,7 +24,11 @@ const itemVariants = {
   },
 }
 
-export const HeroSection = () => {
+interface HeroSectionProps {
+  profile: UserProfile | null
+}
+
+export const HeroSection = ({ profile }: HeroSectionProps) => {
   return (
     <section className="relative flex flex-col-reverse items-center justify-center gap-10 overflow-hidden  mt-10 md:flex-row md:gap-20">
       {/* Subtle Background Gradient */}
@@ -38,7 +43,7 @@ export const HeroSection = () => {
       />
 
       {/* Ensure content is above the gradient */}
-      <div className="absolute inset-0 z-0 bg-linear-to-b from-background/30 via-background/80 to-background" />
+      <div className="absolute  inset-0 z-0 bg-linear-to-b from-background/30 via-background/80 to-background" />
 
       {/* Text Content */}
       <motion.div
@@ -60,7 +65,7 @@ export const HeroSection = () => {
           variants={itemVariants}
           className="mb-4 text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl"
         >
-          {CONFIG.name}
+          {profile?.name || CONFIG.name}
         </motion.h1>
 
         {/* Description */}
@@ -68,7 +73,7 @@ export const HeroSection = () => {
           variants={itemVariants}
           className="mb-8 max-w-lg text-lg text-muted-foreground md:text-xl"
         >
-          {CONFIG.description}
+          {profile?.description || CONFIG.description}
         </motion.p>
 
         {/* Buttons */}
@@ -103,12 +108,10 @@ export const HeroSection = () => {
       >
         <div className="relative h-18 w-18 overflow-hidden rounded-full border-2 shadow-xl shadow-primary/20 md:h-40 md:w-40">
           <img
-            src={CONFIG.profilePic}
-            alt="Profile picture of Dhruvish Patel"
-            fill
+            src={profile?.image || CONFIG.profilePic}
+            alt={`Profile picture of ${profile?.name || CONFIG.name}`}
             sizes="(max-width: 768px) 128px, 160px"
             className="object-cover"
-            priority
           />
         </div>
       </motion.div>

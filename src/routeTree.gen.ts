@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as EditorTestRouteImport } from './routes/editor-test'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as WebRouteRouteImport } from './routes/_web/route'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
@@ -27,11 +26,6 @@ import { Route as WebBlogsSlugRouteImport } from './routes/_web/blogs/$slug'
 import { Route as AdminBlogsIdIndexRouteImport } from './routes/admin/blogs/$id/index'
 import { Route as AdminBlogsIdEditRouteImport } from './routes/admin/blogs/$id/edit'
 
-const EditorTestRoute = EditorTestRouteImport.update({
-  id: '/editor-test',
-  path: '/editor-test',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -114,7 +108,6 @@ const AdminBlogsIdEditRoute = AdminBlogsIdEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
-  '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
@@ -131,7 +124,6 @@ export interface FileRoutesByFullPath {
   '/admin/blogs/$id': typeof AdminBlogsIdIndexRoute
 }
 export interface FileRoutesByTo {
-  '/editor-test': typeof EditorTestRoute
   '/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
@@ -151,7 +143,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_web': typeof WebRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
-  '/editor-test': typeof EditorTestRoute
   '/_web/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
@@ -171,7 +162,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/admin'
-    | '/editor-test'
     | '/contact-us'
     | '/admin/profile'
     | '/admin/projects'
@@ -188,7 +178,6 @@ export interface FileRouteTypes {
     | '/admin/blogs/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/editor-test'
     | '/contact-us'
     | '/admin/profile'
     | '/admin/projects'
@@ -207,7 +196,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_web'
     | '/admin'
-    | '/editor-test'
     | '/_web/contact-us'
     | '/admin/profile'
     | '/admin/projects'
@@ -227,19 +215,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   WebRouteRoute: typeof WebRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  EditorTestRoute: typeof EditorTestRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/editor-test': {
-      id: '/editor-test'
-      path: '/editor-test'
-      fullPath: '/editor-test'
-      preLoaderRoute: typeof EditorTestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -404,7 +384,6 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   WebRouteRoute: WebRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
-  EditorTestRoute: EditorTestRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
 export const routeTree = rootRouteImport
