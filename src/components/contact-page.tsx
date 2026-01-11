@@ -1,5 +1,4 @@
 import { useForm } from '@tanstack/react-form'
-import { z } from 'zod'
 import Turnstile from 'react-turnstile'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -11,32 +10,8 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { contactFormSchema } from '@/functions/contact'
 // import { useContactDataSave } from '@/apiHooks/contactApi'
-
-const contactFormSchema = z.object({
-  firstName: z.string().min(2, {
-    message: 'First name must be at least 2 characters.',
-  }),
-  lastName: z.string().min(2, {
-    message: 'Last name must be at least 2 characters.',
-  }),
-  email: z.email({
-    message: 'Please enter a valid email address.',
-  }),
-  phoneNumber: z.string(),
-  message: z
-    .string()
-    .min(10, {
-      message: 'Message must be at least 10 characters.',
-    })
-    .max(500, {
-      message: 'Message must not be longer than 500 characters.',
-    }),
-  // This field will be populated by the Cloudflare widget
-  cfTurnstileResponse: z.string().min(1, {
-    message: 'Please complete the security challenge.',
-  }),
-})
 
 // --- 3. The Contact Form Component ---
 export function ContactPage() {

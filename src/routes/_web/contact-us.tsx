@@ -1,6 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Container from '@/components/Container'
-import Taskbar from '@/components/Taskbar'
 import { ContactPage } from '@/components/contact-page'
 
 export const Route = createFileRoute('/_web/contact-us')({
