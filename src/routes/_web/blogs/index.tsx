@@ -160,9 +160,9 @@ function BlogListComponent() {
               No articles found matching your criteria.
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {blogs.map((blog) => (
-                <BlogCard key={blog.id} blog={blog} />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {blogs.map((blog, index) => (
+                <BlogCard key={blog.id} blog={blog} index={index} />
               ))}
             </div>
           )}

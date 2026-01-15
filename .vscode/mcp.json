@@ -1,0 +1,18 @@
+{
+	"servers": {
+		"tanstack": {
+			"url": "https://tanstack.com/api/mcp",
+			"type": "http"
+		},
+		"shadcn": {
+			"type": "stdio",
+			"command": "bun",
+			"args": [
+				"x",
+				"shadcn@latest",
+				"mcp"
+			]
+		}
+	},
+	"inputs": []
+}

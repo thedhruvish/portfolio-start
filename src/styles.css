@@ -118,7 +118,7 @@
 }
 
 ::selection {
-  color: #16a34a;
+  color: #16a34a !important;
 }
 
 ::view-transition-old(root),
