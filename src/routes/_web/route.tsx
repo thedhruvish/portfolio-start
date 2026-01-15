@@ -1,4 +1,5 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router'
+import { LayoutGroup } from 'framer-motion'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/navbar'
 import Container from '@/components/Container'
@@ -14,13 +15,13 @@ function RouteComponent() {
   const profile = Route.useLoaderData()
 
   return (
-    <>
+    <LayoutGroup>
       <Navbar className="top-2" />
       <Container>
         <Outlet />
       </Container>
       <Taskbar profile={profile} />
       <Footer />
-    </>
+    </LayoutGroup>
   )
 }

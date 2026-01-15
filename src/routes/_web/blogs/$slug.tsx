@@ -1,9 +1,9 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { Calendar } from 'lucide-react'
 import { BlockEditor } from '@/components/block-editor'
 import Container from '@/components/Container'
+import { EnhancedImage } from '@/components/enhanced-image'
 import { getPublicBlogBySlugFn } from '@/functions/blogs'
 import { Badge } from '@/components/ui/badge'
 
@@ -49,13 +49,11 @@ function BlogDetailComponent() {
 
       {/* Featured Image */}
       {blog.thumbImage && (
-        <div className="relative aspect-video w-full overflow-hidden rounded-xl border bg-muted shadow-sm">
-          <img
-            src={blog.thumbImage}
-            alt={blog.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
+        <EnhancedImage
+          src={blog.thumbImage}
+          alt={blog.title}
+          className="aspect-video border shadow-sm"
+        />
       )}
 
       {/* Content */}
