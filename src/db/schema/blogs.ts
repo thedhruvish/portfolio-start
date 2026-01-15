@@ -16,6 +16,7 @@ export const blogs = pgTable('blogs', {
   content: jsonb('content'), // JSON content for Yoopta Editor
   thumbImage: text('thumb_image'),
   published: boolean('published').default(false),
+  likes: integer('likes').default(0),
   order: integer('order').default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

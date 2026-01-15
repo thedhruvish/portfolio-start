@@ -15,6 +15,13 @@
       "when": 1768476388532,
       "tag": "0001_clumsy_titanium_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1768493978905,
+      "tag": "0002_chemical_nightmare",
+      "breakpoints": true
     }
   ]
 }

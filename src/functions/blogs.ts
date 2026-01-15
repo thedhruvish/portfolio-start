@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { and, desc, eq, inArray, like, sql } from 'drizzle-orm'
+import { and, desc, eq, inArray, like, ne, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
 import { blogs, tags } from '@/db/schema'
@@ -92,16 +92,78 @@ export const getPublicBlogBySlugFn = createServerFn({ method: 'GET' })
 
     if (!blog) return null
 
-    const blogTags = await db
+    const blogTagsFormatted = await db
       .select({ tag: tags.tag })
       .from(tags)
       .where(eq(tags.blogId, blog.id))
 
+    // Fetch Suggestions
+    const suggestionsResult = await db
+      .select({
+        id: blogs.id,
+        title: blogs.title,
+        slug: blogs.slug,
+        description: blogs.description,
+        thumbImage: blogs.thumbImage,
+        published: blogs.published,
+        createdAt: blogs.createdAt,
+        updatedAt: blogs.updatedAt,
+      })
+      .from(blogs)
+      .where(and(eq(blogs.published, true), ne(blogs.id, blog.id)))
+      .orderBy(desc(blogs.createdAt))
+      .limit(3)
+
+    let suggestions = suggestionsResult.map((s) => ({
+      ...s,
+      tags: [] as Array<string>,
+    }))
+    const suggestionIds = suggestionsResult.map((s) => s.id)
+
+    if (suggestionIds.length > 0) {
+      const tagsResult = await db
+        .select({
+          blogId: tags.blogId,
+          tag: tags.tag,
+        })
+        .from(tags)
+        .where(sql`${tags.blogId} IN ${suggestionIds}`)
+
+      const tagsMap = new Map<number, Array<string>>()
+      tagsResult.forEach((t) => {
+        if (!tagsMap.has(t.blogId)) tagsMap.set(t.blogId, [])
+        tagsMap.get(t.blogId)?.push(t.tag)
+      })
+
+      suggestions = suggestionsResult.map((b) => ({
+        ...b,
+        tags: tagsMap.get(b.id) || [],
+      }))
+    }
+
     return {
       ...blog,
       content: blog.content as any,
-      tags: blogTags.map((t) => t.tag),
+      likes: blog.likes || 0,
+      tags: blogTagsFormatted.map((t) => t.tag),
+      suggestions,
     }
+  })
+
+export const updateBlogLikesFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        id: z.number(),
+        likes: z.number(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data: { id, likes: count } }) => {
+    await db
+      .update(blogs)
+      .set({ likes: sql`${blogs.likes} + ${count}` })
+      .where(eq(blogs.id, id))
   })
 
 export const getLatestBlogsFn = createServerFn({ method: 'GET' }).handler(
