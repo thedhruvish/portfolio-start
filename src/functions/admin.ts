@@ -41,21 +41,14 @@ export const updateProfileFn = createServerFn({ method: 'POST' })
 
 // --- Projects ---
 
-const ProjectSchema = z.object({
+export const ProjectSchema = z.object({
   id: z.number().optional(),
   title: z.string().min(1),
   description: z.string().min(1),
   image: z.string().optional(),
   github: z.string().optional(),
   link: z.string().optional(),
-  tech: z
-    .array(
-      z.object({
-        name: z.string(),
-        icon: z.string(), // Storing icon name for simplicity in DB, will need mapping
-      }),
-    )
-    .optional(),
+  tech: z.array(z.string()).optional(),
 })
 
 export const getProjectsFn = createServerFn({ method: 'GET' }).handler(

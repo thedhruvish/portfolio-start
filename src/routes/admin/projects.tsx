@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
-import { z } from 'zod'
 import { toast } from 'sonner'
 import { Check, ChevronsUpDown, Pencil, Plus, Trash2, X } from 'lucide-react'
+import type { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
@@ -41,6 +41,7 @@ import {
   FieldLabel as ShadcnFieldLabel,
 } from '@/components/ui/field'
 import {
+  ProjectSchema,
   createProjectFn,
   deleteProjectFn,
   getProjectsFn,
@@ -53,23 +54,6 @@ export const Route = createFileRoute('/admin/projects')({
     return { projects }
   },
   component: AdminProjects,
-})
-
-const ProjectSchema = z.object({
-  id: z.number().optional(),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required'),
-  image: z.string().optional(),
-  github: z.string().optional(),
-  link: z.string().optional(),
-  tech: z
-    .array(
-      z.object({
-        name: z.string(),
-        icon: z.string(),
-      }),
-    )
-    .optional(),
 })
 
 type ProjectFormValues = z.infer<typeof ProjectSchema>
@@ -326,8 +310,8 @@ function TechStackSelector({
   value = [],
   onChange,
 }: {
-  value?: Array<{ name: string; icon: string }> | null
-  onChange: (val: Array<{ name: string; icon: string }>) => void
+  value?: Array<string> | null
+  onChange: (val: Array<string>) => void
 }) {
   const [open, setOpen] = useState(false)
   const availableTech = [
@@ -367,12 +351,12 @@ function TechStackSelector({
       <ShadcnFieldLabel>Tech Stack</ShadcnFieldLabel>
       <div className="flex flex-wrap gap-2 mb-2">
         {value?.map((tech) => (
-          <Badge key={tech.name} variant="secondary" className="gap-1">
-            {tech.name}
+          <Badge key={tech} variant="secondary" className="gap-1">
+            {tech}
             <button
               type="button"
               onClick={() => {
-                onChange(value.filter((t) => t.name !== tech.name))
+                onChange(value.filter((t) => t !== tech))
               }}
               className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
@@ -400,17 +384,14 @@ function TechStackSelector({
               <CommandEmpty>No tech found.</CommandEmpty>
               <CommandGroup>
                 {availableTech.map((techName) => {
-                  const isSelected = value?.some((t) => t.name === techName)
+                  const isSelected = value?.includes(techName)
                   if (isSelected) return null
                   return (
                     <CommandItem
                       key={techName}
                       value={techName}
                       onSelect={() => {
-                        onChange([
-                          ...(value || []),
-                          { name: techName, icon: techName },
-                        ])
+                        onChange([...(value || []), techName])
                         setOpen(false)
                       }}
                     >

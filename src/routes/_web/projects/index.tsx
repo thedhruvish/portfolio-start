@@ -2,20 +2,26 @@ import { createFileRoute } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { ExternalLink } from 'lucide-react'
 import Github from '@/components/svgs/Github'
+import { Badge } from '@/components/ui/badge'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { projectList } from '@/config/projects'
+import { TechIconsMap } from '@/config/tech-icons-map'
+import { getPublicProjectsFn } from '@/functions/projects'
 
 export const Route = createFileRoute('/_web/projects/')({
   component: ProjectsPage,
+  loader: async () => {
+    const projects = await getPublicProjectsFn()
+    return { projects }
+  },
 })
 
 function ProjectsPage() {
-  const projects = projectList
+  const { projects } = Route.useLoaderData()
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -32,7 +38,7 @@ function ProjectsPage() {
       <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((project, index) => (
           <motion.li
-            key={project.title}
+            key={project.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1, duration: 0.4 }}
@@ -104,18 +110,31 @@ function ProjectsPage() {
                   <div className="mt-6 pt-4 border-t border-border/50">
                     <TooltipProvider>
                       <div className="flex flex-wrap items-center gap-3">
-                        {project.tech.map(({ name, icon: Icon }, idx) => (
-                          <Tooltip key={idx}>
-                            <TooltipTrigger asChild>
-                              <div className="size-5 cursor-default text-muted-foreground">
-                                <Icon />
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p className="text-xs">{name}</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        ))}
+                        {project.tech.map((techName) => {
+                          const Icon = TechIconsMap[techName]
+                          return (
+                            <Tooltip key={techName}>
+                              <TooltipTrigger asChild>
+                                <div className="size-5 cursor-default text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300">
+                                  {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
+                                  {Icon ? (
+                                    <Icon />
+                                  ) : (
+                                    <Badge
+                                      variant="secondary"
+                                      className="text-[10px] px-1 py-0 h-5"
+                                    >
+                                      {techName}
+                                    </Badge>
+                                  )}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="text-xs">{techName}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )
+                        })}
                       </div>
                     </TooltipProvider>
                   </div>
