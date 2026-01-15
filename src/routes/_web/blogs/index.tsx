@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Loader2, Search } from 'lucide-react'
 import { z } from 'zod'
 import { useInView } from 'motion/react'
+import { useDebounce } from 'use-debounce'
 import { getPublicBlogsFn, getPublicTagsFn } from '@/functions/blogs'
 import { BlogCard } from '@/components/BlogCard'
 import { Input } from '@/components/ui/input'
@@ -17,6 +18,7 @@ const blogSearchSchema = z.object({
 
 export const Route = createFileRoute('/_web/blogs/')({
   validateSearch: (search) => blogSearchSchema.parse(search),
+
   loaderDeps: ({ search: { search, tags } }) => ({ search, tags }),
   component: BlogListComponent,
 })
@@ -24,9 +26,19 @@ export const Route = createFileRoute('/_web/blogs/')({
 function BlogListComponent() {
   const { search, tags } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
-
+  const [searchInput, setSearchInput] = useState(search || '')
+  const [debouncedSearch] = useDebounce(searchInput, 1300, { leading: true })
   const ref = useRef(null)
   const InView = useInView(ref)
+
+  useEffect(() => {
+    if (debouncedSearch !== search) {
+      navigate({
+        search: (prev) => ({ ...prev, search: debouncedSearch || undefined }),
+        replace: true,
+      })
+    }
+  }, [debouncedSearch])
 
   // Fetch Tags
   const { data: availableTags } = useSuspenseQuery({
@@ -59,13 +71,6 @@ function BlogListComponent() {
   }, [InView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const blogs = data?.pages.flatMap((page) => page.data) || []
-
-  const handleSearch = (val: string) => {
-    navigate({
-      search: (prev) => ({ ...prev, search: val || undefined }),
-      replace: true,
-    })
-  }
 
   const handleTagChange = (val: string) => {
     if (val === 'All') {
@@ -111,8 +116,8 @@ function BlogListComponent() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search articles..."
-            value={search || ''}
-            onChange={(e) => handleSearch(e.target.value)}
+            value={searchInput || ''}
+            onChange={(e) => setSearchInput(e.target.value)}
             className="pl-9 bg-background"
           />
         </div>
