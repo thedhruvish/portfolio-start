@@ -9,3 +9,5 @@ export const projects = pgTable('projects', {
   link: text('link'),
   tech: text('tech').array(),
 })
+
+export type Project = typeof projects.$inferSelect
