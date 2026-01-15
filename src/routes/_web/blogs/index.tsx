@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query'
-import { useEffect, useRef, useState } from 'react'
+import { useQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { Loader2, Search } from 'lucide-react'
 import { z } from 'zod'
 import { useInView } from 'motion/react'
@@ -10,6 +10,7 @@ import { BlogCard } from '@/components/BlogCard'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import Container from '@/components/Container'
+import { BlogsSkeleton } from '@/components/BlogsSkeleton'
 
 const blogSearchSchema = z.object({
   search: z.string().optional(),
@@ -23,32 +24,12 @@ export const Route = createFileRoute('/_web/blogs/')({
   component: BlogListComponent,
 })
 
-function BlogListComponent() {
-  const { search, tags } = Route.useSearch()
-  const navigate = useNavigate({ from: Route.fullPath })
-  const [searchInput, setSearchInput] = useState(search || '')
-  const [debouncedSearch] = useDebounce(searchInput, 1300, { leading: true })
+function BlogGrid({ search, tags }: { search?: string; tags?: Array<string> }) {
   const ref = useRef(null)
   const InView = useInView(ref)
 
-  useEffect(() => {
-    if (debouncedSearch !== search) {
-      navigate({
-        search: (prev) => ({ ...prev, search: debouncedSearch || undefined }),
-        replace: true,
-      })
-    }
-  }, [debouncedSearch])
-
-  // Fetch Tags
-  const { data: availableTags } = useSuspenseQuery({
-    queryKey: ['public-tags'],
-    queryFn: () => getPublicTagsFn(),
-  })
-
-  // Infinite Query for Blogs
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
-    useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery({
       queryKey: ['public-blogs', search, tags],
       queryFn: async ({ pageParam }) => {
         return await getPublicBlogsFn({
@@ -70,7 +51,58 @@ function BlogListComponent() {
     }
   }, [InView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
-  const blogs = data?.pages.flatMap((page) => page.data) || []
+  const blogs = data.pages.flatMap((page) => page.data) || []
+
+  if (blogs.length === 0) {
+    return (
+      <div className="text-center py-20 text-muted-foreground">
+        No articles found matching your criteria.
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {blogs.map((blog, index) => (
+          <BlogCard key={blog.id} blog={blog} index={index} />
+        ))}
+      </div>
+
+      <div ref={ref} className="flex justify-center py-8 min-h-[50px]">
+        {isFetchingNextPage && (
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        )}
+        {!hasNextPage && blogs.length > 0 && (
+          <p className="text-sm text-muted-foreground">
+            You&apos;ve reached the end.
+          </p>
+        )}
+      </div>
+    </>
+  )
+}
+
+function BlogListComponent() {
+  const { search, tags } = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
+  const [searchInput, setSearchInput] = useState(search || '')
+  const [debouncedSearch] = useDebounce(searchInput, 1300, { leading: true })
+
+  useEffect(() => {
+    if (debouncedSearch !== search) {
+      navigate({
+        search: (prev) => ({ ...prev, search: debouncedSearch || undefined }),
+        replace: true,
+      })
+    }
+  }, [debouncedSearch])
+
+  // Fetch Tags with useQuery (non-suspense to avoid blocking shell)
+  const { data: availableTags } = useQuery({
+    queryKey: ['public-tags'],
+    queryFn: () => getPublicTagsFn(),
+  })
 
   const handleTagChange = (val: string) => {
     if (val === 'All') {
@@ -131,7 +163,7 @@ function BlogListComponent() {
             >
               All
             </Badge>
-            {availableTags.map((t) => (
+            {(availableTags || []).map((t) => (
               <Badge
                 key={t}
                 variant={tags?.includes(t) ? 'default' : 'outline'}
@@ -145,40 +177,15 @@ function BlogListComponent() {
         </div>
       </div>
 
-      {status === 'pending' ? (
-        <div className="flex justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        </div>
-      ) : status === 'error' ? (
-        <div className="text-center py-20 text-destructive">
-          Failed to load blogs. Please try again later.
-        </div>
-      ) : (
-        <>
-          {blogs.length === 0 ? (
-            <div className="text-center py-20 text-muted-foreground">
-              No articles found matching your criteria.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {blogs.map((blog, index) => (
-                <BlogCard key={blog.id} blog={blog} index={index} />
-              ))}
-            </div>
-          )}
-
-          <div ref={ref} className="flex justify-center py-8 min-h-[50px]">
-            {isFetchingNextPage && (
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-            )}
-            {!hasNextPage && blogs.length > 0 && (
-              <p className="text-sm text-muted-foreground">
-                You&apos;ve reached the end.
-              </p>
-            )}
+      <Suspense
+        fallback={
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <BlogsSkeleton count={6} />
           </div>
-        </>
-      )}
+        }
+      >
+        <BlogGrid search={search} tags={tags} />
+      </Suspense>
     </Container>
   )
 }
