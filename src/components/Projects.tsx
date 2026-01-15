@@ -1,17 +1,24 @@
 import { ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import { Link } from '@tanstack/react-router'
 import Github from './svgs/Github'
+import { Badge } from './ui/badge'
+import { getPublicProjectsFn } from '@/functions/projects'
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { projectList } from '@/config/projects'
+import { TechIconsMap } from '@/config/tech-icons-map'
 
 export const Projects = () => {
-  const projects = projectList
+  const { data: projects } = useSuspenseQuery({
+    queryKey: ['projects'],
+    queryFn: () => getPublicProjectsFn(),
+  })
+
   return (
     <section id="projects" className="mt-20 scroll-mt-24">
       {/* Section Header */}
@@ -77,22 +84,36 @@ export const Projects = () => {
 
               {/* Tech Stack (with Tooltips) */}
               {project.tech && project.tech.length > 0 && (
-                <TooltipProvider>
-                  <div className="mt-5 flex flex-wrap items-center gap-3">
-                    {project.tech.map(({ name, icon: Icon }, idx) => (
-                      <Tooltip key={idx}>
-                        <TooltipTrigger asChild>
-                          <div className="size-6 hover:scale-110 transition-transform duration-300 cursor-pointer">
-                            <Icon />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-sm">{name}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </div>
-                </TooltipProvider>
+                <div className="mt-6 pt-4 border-t border-border/50">
+                  <TooltipProvider>
+                    <div className="flex flex-wrap items-center gap-3">
+                      {project.tech.map((techName) => {
+                        const Icon = TechIconsMap[techName]
+                        return (
+                          <Tooltip key={techName}>
+                            <TooltipTrigger asChild>
+                              <div className="size-5 cursor-default text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300">
+                                {Icon ? (
+                                  <Icon />
+                                ) : (
+                                  <Badge
+                                    variant="secondary"
+                                    className="text-[10px] px-1 py-0 h-5"
+                                  >
+                                    {techName}
+                                  </Badge>
+                                )}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">{techName}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )
+                      })}
+                    </div>
+                  </TooltipProvider>
+                </div>
               )}
             </article>
           </motion.li>

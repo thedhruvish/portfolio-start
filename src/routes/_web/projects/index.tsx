@@ -65,7 +65,7 @@ function ProjectsPage() {
                 </div>
               )}
 
-              <div className="p-6 flex flex-col flex-grow">
+              <div className="p-6 flex flex-col grow">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <h3 className="text-xl font-bold text-primary line-clamp-2">
@@ -99,7 +99,7 @@ function ProjectsPage() {
                 </div>
 
                 {/* Description */}
-                <div className="flex-grow">
+                <div className="grow">
                   <p className="text-sm text-muted-foreground line-clamp-4 leading-relaxed">
                     {project.description}
                   </p>
@@ -116,7 +116,6 @@ function ProjectsPage() {
                             <Tooltip key={techName}>
                               <TooltipTrigger asChild>
                                 <div className="size-5 cursor-default text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300">
-                                  {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
                                   {Icon ? (
                                     <Icon />
                                   ) : (

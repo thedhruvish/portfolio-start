@@ -45,6 +45,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <html lang="en">
           <head>
             <HeadContent />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `(function(){var storageKey='dhruvish-theme';var defaultTheme='system';var theme=localStorage.getItem(storageKey) || defaultTheme;var root=document.documentElement;root.classList.remove('light', 'dark');if(theme==='system'){var systemTheme=window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark':'light';root.classList.add(systemTheme); }else{root.classList.add(theme);}})();`,
+              }}
+            />
           </head>
           <body>
             {children}

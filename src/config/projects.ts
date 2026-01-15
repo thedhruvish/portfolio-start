@@ -10,6 +10,15 @@ export type Tech = {
   icon: React.ComponentType
 }
 
+export const techIcons: Record<string, React.ComponentType | undefined> = {
+  React: ReactIcon,
+  Nodejs: NodeJs,
+  Expressjs: ExpressJs,
+  MongoDB: MongoDB,
+  Expo: ExpoApp,
+  Typescript: TypeScript,
+}
+
 export type Project = {
   title: string
   description: string
