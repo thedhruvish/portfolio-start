@@ -4,6 +4,7 @@ import {
   FolderGit2,
   LayoutDashboard,
   LogOut,
+  Mail,
   MessageCircle,
   Newspaper,
   User,
@@ -45,6 +46,11 @@ export const navItems = [
     title: 'Blogs',
     url: '/admin/blogs',
     icon: Newspaper,
+  },
+  {
+    title: 'Subscribers',
+    url: '/admin/subscribers',
+    icon: Mail,
   },
   {
     title: 'Contact Us',

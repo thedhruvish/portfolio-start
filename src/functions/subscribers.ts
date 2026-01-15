@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
 import { subscribers } from '@/db/schema/subscribers'
@@ -24,4 +24,29 @@ export const subscribeToNewsletterFn = createServerFn({ method: 'POST' })
 
     await db.insert(subscribers).values({ email })
     return { success: true, message: 'Successfully subscribed!' }
+  })
+
+export const getSubscribersFn = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await db
+      .select()
+      .from(subscribers)
+      .orderBy(desc(subscribers.createdAt))
+  },
+)
+
+export const deleteSubscriberFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => z.number().parse(data))
+  .handler(async ({ data: id }) => {
+    await db.delete(subscribers).where(eq(subscribers.id, id))
+    return { success: true, message: 'Subscriber deleted' }
+  })
+
+export const toggleSubscriberStatusFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z.object({ id: z.number(), active: z.boolean() }).parse(data),
+  )
+  .handler(async ({ data: { id, active } }) => {
+    await db.update(subscribers).set({ active }).where(eq(subscribers.id, id))
+    return { success: true, message: 'Subscriber status updated' }
   })

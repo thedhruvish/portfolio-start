@@ -14,6 +14,7 @@ import { Route as WebRouteRouteImport } from './routes/_web/route'
 import { Route as AuthIndexRouteImport } from './routes/auth/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as WebIndexRouteImport } from './routes/_web/index'
+import { Route as AdminSubscribersRouteImport } from './routes/admin/subscribers'
 import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
@@ -50,6 +51,11 @@ const WebIndexRoute = WebIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => WebRouteRoute,
+} as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/projects',
@@ -117,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/': typeof WebIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
@@ -134,6 +141,7 @@ export interface FileRoutesByTo {
   '/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/': typeof WebIndexRoute
   '/admin': typeof AdminIndexRoute
   '/auth': typeof AuthIndexRoute
@@ -154,6 +162,7 @@ export interface FileRoutesById {
   '/_web/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/_web/': typeof WebIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/auth/': typeof AuthIndexRoute
@@ -174,6 +183,7 @@ export interface FileRouteTypes {
     | '/contact-us'
     | '/admin/profile'
     | '/admin/projects'
+    | '/admin/subscribers'
     | '/'
     | '/admin/'
     | '/auth'
@@ -191,6 +201,7 @@ export interface FileRouteTypes {
     | '/contact-us'
     | '/admin/profile'
     | '/admin/projects'
+    | '/admin/subscribers'
     | '/'
     | '/admin'
     | '/auth'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_web/contact-us'
     | '/admin/profile'
     | '/admin/projects'
+    | '/admin/subscribers'
     | '/_web/'
     | '/admin/'
     | '/auth/'
@@ -266,6 +278,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof WebIndexRouteImport
       parentRoute: typeof WebRouteRoute
+    }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/projects': {
       id: '/admin/projects'
@@ -379,6 +398,7 @@ const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(
 interface AdminRouteRouteChildren {
   AdminProfileRoute: typeof AdminProfileRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
+  AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBlogsNewRoute: typeof AdminBlogsNewRoute
   AdminBlogsIndexRoute: typeof AdminBlogsIndexRoute
@@ -390,6 +410,7 @@ interface AdminRouteRouteChildren {
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminProfileRoute: AdminProfileRoute,
   AdminProjectsRoute: AdminProjectsRoute,
+  AdminSubscribersRoute: AdminSubscribersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBlogsNewRoute: AdminBlogsNewRoute,
   AdminBlogsIndexRoute: AdminBlogsIndexRoute,
