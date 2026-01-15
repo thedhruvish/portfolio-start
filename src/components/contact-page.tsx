@@ -10,8 +10,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { contactFormSchema } from '@/functions/contact'
-// import { useContactDataSave } from '@/apiHooks/contactApi'
+import { contactFormSchema, submitContactFormFn } from '@/functions/contact'
 
 // --- 3. The Contact Form Component ---
 export function ContactPage() {
@@ -29,10 +28,10 @@ export function ContactPage() {
     validators: {
       onSubmit: contactFormSchema,
     },
-    onSubmit: ({ value, formApi }) => {
+    onSubmit: async ({ value, formApi }) => {
       try {
         console.log(value)
-        // await contactDataSave(value)
+        await submitContactFormFn({ data: value })
         toast.success('Message Sent!')
         formApi.reset()
       } catch (error) {

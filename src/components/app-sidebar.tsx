@@ -4,9 +4,12 @@ import {
   FolderGit2,
   LayoutDashboard,
   LogOut,
+  MessageCircle,
   Newspaper,
   User,
 } from 'lucide-react'
+
+import { ModeToggle } from '@/components/mode-toggle'
 import {
   Sidebar,
   SidebarContent,
@@ -22,7 +25,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { logoutFn } from '@/functions/auth'
 
-const items = [
+export const navItems = [
   {
     title: 'Dashboard',
     url: '/admin/dashboard',
@@ -43,6 +46,11 @@ const items = [
     url: '/admin/blogs',
     icon: Newspaper,
   },
+  {
+    title: 'Contact Us',
+    url: '/admin/contacts',
+    icon: MessageCircle,
+  },
 ]
 
 export function AppSidebar() {
@@ -57,6 +65,15 @@ export function AppSidebar() {
             <span className="truncate font-semibold">Admin Panel</span>
             <span className="truncate text-xs">Manage Content</span>
           </div>
+          <ModeToggle />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => logoutFn()}
+            className="h-[1.2rem] w-[1.2rem]"
+          >
+            <LogOut className="h-[1.2rem] w-[1.2rem]" />
+          </Button>
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -64,7 +81,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {navItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link
