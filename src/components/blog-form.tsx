@@ -50,7 +50,7 @@ export function BlogForm({
   suggestions = [],
 }: {
   initialValues?: BlogFormValues
-  suggestions?: string[]
+  suggestions?: Array<string>
 }) {
   const router = useRouter()
   const [tagInput, setTagInput] = useState('')

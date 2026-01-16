@@ -6,7 +6,7 @@ export default [
   ...tanstackConfig,
   {
     rules: {
-      '@typescript-eslint/no-unnecessary-condition': 'never',
+      '@typescript-eslint/no-unnecessary-condition': 'off',
     },
   },
 ]

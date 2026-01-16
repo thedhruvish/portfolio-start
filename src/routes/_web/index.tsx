@@ -60,7 +60,7 @@ export const Route = createFileRoute('/_web/')({
       projects: defer(projects),
     }
   },
-  ssr: "data-only"
+  ssr: 'data-only',
 })
 
 function RouteComponent() {

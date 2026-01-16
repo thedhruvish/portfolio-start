@@ -208,9 +208,7 @@
         "blogs_slug_unique": {
           "name": "blogs_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -246,12 +244,8 @@
           "name": "tags_blog_id_blogs_id_fk",
           "tableFrom": "tags",
           "tableTo": "blogs",
-          "columnsFrom": [
-            "blog_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["blog_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
