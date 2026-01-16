@@ -17,6 +17,19 @@ import {
 import { BlockEditor } from '@/components/block-editor'
 import { createBlogFn, updateBlogFn } from '@/functions/admin'
 import { Badge } from '@/components/ui/badge'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 const BlogSchema = z.object({
   id: z.number().optional(),
@@ -34,11 +47,14 @@ type BlogFormValues = z.infer<typeof BlogSchema>
 
 export function BlogForm({
   initialValues,
+  suggestions = [],
 }: {
   initialValues?: BlogFormValues
+  suggestions?: string[]
 }) {
   const router = useRouter()
   const [tagInput, setTagInput] = useState('')
+  const [open, setOpen] = useState(false)
   const [isFullScreen, setIsFullScreen] = useState(false)
 
   const form = useForm({
@@ -92,16 +108,16 @@ export function BlogForm({
                 onBlur={field.handleBlur}
                 onChange={(e) => {
                   field.handleChange(e.target.value)
-                  // Auto-generate slug from title if slug is empty
-                  if (!form.getFieldValue('slug')) {
-                    form.setFieldValue(
-                      'slug',
-                      e.target.value
-                        .toLowerCase()
-                        .replace(/ /g, '-')
-                        .replace(/[^\w-]+/g, ''),
-                    )
-                  }
+                  // Auto-generate slug from title
+                  // We update the slug whenever the title changes to keep them in sync.
+                  // User can manually edit the slug field afterwards if needed.
+                  form.setFieldValue(
+                    'slug',
+                    e.target.value
+                      .toLowerCase()
+                      .replace(/ /g, '-')
+                      .replace(/[^\w-]+/g, ''),
+                  )
                 }}
               />
               <ShadcnFieldError errors={field.state.meta.errors} />
@@ -195,37 +211,83 @@ export function BlogForm({
                 </Badge>
               ))}
             </div>
-            <div className="flex gap-2">
-              <Input
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    if (tagInput.trim()) {
-                      const newTags = [...field.state.value, tagInput.trim()]
-                      // Remove duplicates
-                      field.handleChange([...new Set(newTags)])
-                      setTagInput('')
-                    }
-                  }
-                }}
-                placeholder="Add a tag..."
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  if (tagInput.trim()) {
-                    const newTags = [...field.state.value, tagInput.trim()]
-                    field.handleChange([...new Set(newTags)])
-                    setTagInput('')
-                  }
-                }}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between"
+                >
+                  <span className="text-muted-foreground">Add tag...</span>
+                  <Plus className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[300px] p-0" align="start">
+                <Command>
+                  <CommandInput
+                    placeholder="Search tags..."
+                    onValueChange={setTagInput}
+                    value={tagInput}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && tagInput.trim()) {
+                        e.preventDefault()
+                        if (!field.state.value.includes(tagInput.trim())) {
+                          field.handleChange([
+                            ...field.state.value,
+                            tagInput.trim(),
+                          ])
+                          setTagInput('')
+                          setOpen(false)
+                        }
+                      }
+                    }}
+                  />
+                  <CommandList>
+                    <CommandEmpty>
+                      <button
+                        className="w-full text-left p-2 text-sm hover:bg-accent rounded-sm"
+                        onClick={() => {
+                          if (
+                            tagInput.trim() &&
+                            !field.state.value.includes(tagInput.trim())
+                          ) {
+                            field.handleChange([
+                              ...field.state.value,
+                              tagInput.trim(),
+                            ])
+                            setTagInput('')
+                            setOpen(false)
+                          }
+                        }}
+                      >
+                        Create tag "{tagInput}"
+                      </button>
+                    </CommandEmpty>
+                    <CommandGroup heading="Suggestions">
+                      {suggestions
+                        .filter((s) => !field.state.value.includes(s))
+                        .map((suggestion) => (
+                          <CommandItem
+                            key={suggestion}
+                            value={suggestion}
+                            onSelect={(currentValue) => {
+                              field.handleChange([
+                                ...field.state.value,
+                                currentValue,
+                              ])
+                              setOpen(false)
+                            }}
+                          >
+                            {suggestion}
+                          </CommandItem>
+                        ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </ShadcnField>
         )}
       />

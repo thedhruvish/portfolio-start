@@ -1,19 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { BlogForm } from '@/components/blog-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getPublicTagsFn } from '@/functions/blogs'
 import { getBlogFn } from '@/functions/admin'
 
 export const Route = createFileRoute('/admin/blogs/$id/edit')({
   loader: async ({ params: { id } }) => {
-    const blog = await getBlogFn({ data: Number(id) })
+    const [blog, tags] = await Promise.all([
+      getBlogFn({ data: Number(id) }),
+      getPublicTagsFn(),
+    ])
     if (!blog) throw new Error('Blog not found')
-    return { blog }
+    return { blog, tags }
   },
   component: EditBlogPage,
 })
 
 function EditBlogPage() {
-  const { blog } = Route.useLoaderData()
+  const { blog, tags } = Route.useLoaderData()
 
   const initialValues = {
     ...blog,
@@ -34,7 +38,7 @@ function EditBlogPage() {
           <CardTitle>{blog.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <BlogForm initialValues={initialValues} />
+          <BlogForm initialValues={initialValues} suggestions={tags} />
         </CardContent>
       </Card>
     </div>
