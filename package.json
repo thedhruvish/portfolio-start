@@ -4,15 +4,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
-    "build": "vite build",
+    "build": "vite build ",
+    "setup:deploy": "bun i  && npx drizzle-kit push",
     "test": "vitest run",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "format": "prettier ",
+    "format": "prettier",
     "check": "prettier --write . && eslint --fix",
-    "deploy": "npm run build && wrangler deploy",
-    "preview": "npm run build && vite preview",
-    "cf-typegen": "wrangler types"
+    "deploy": "bun run build && wrangler deploy",
+    "preview": "bun run build && vite preview",
+    "cf-typegen": "wrangler types",
+    "dizzle:push": "npx drizzle-kit push"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
