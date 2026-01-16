@@ -50,7 +50,7 @@ export const Footer = () => {
               Home
             </Link>
             <Link
-              to="/blog"
+              to="/blogs"
               className="transition-colors hover:text-foreground"
             >
               Blog

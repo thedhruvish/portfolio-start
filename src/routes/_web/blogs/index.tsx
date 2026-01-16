@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import Container from '@/components/Container'
 import { BlogsSkeleton } from '@/components/BlogsSkeleton'
+import { CONFIG } from '@/config/config'
 
 const blogSearchSchema = z.object({
   search: z.string().optional(),
@@ -22,6 +23,38 @@ export const Route = createFileRoute('/_web/blogs/')({
 
   loaderDeps: ({ search: { search, tags } }) => ({ search, tags }),
   component: BlogListComponent,
+  head: () => ({
+    meta: [
+      {
+        title: `Blogs | ${CONFIG.title}`,
+        content: 'Read our latest thoughts, tutorials, and insights.',
+      },
+      {
+        name: 'description',
+        content: 'Read our latest thoughts, tutorials, and insights.',
+      },
+      {
+        property: 'og:title',
+        content: `Blogs | ${CONFIG.title}`,
+      },
+      {
+        property: 'og:description',
+        content: 'Read our latest thoughts, tutorials, and insights.',
+      },
+      {
+        property: 'og:image',
+        content: CONFIG.profilePic,
+      },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: `Blogs | ${CONFIG.title}` },
+      {
+        name: 'twitter:description',
+        content: 'Read our latest thoughts, tutorials, and insights.',
+      },
+      { name: 'twitter:image', content: CONFIG.profilePic },
+    ],
+  }),
 })
 
 function BlogGrid({ search, tags }: { search?: string; tags?: Array<string> }) {

@@ -19,7 +19,7 @@ export const CONFIG = {
   navItems: [
     {
       label: 'Blogs',
-      href: '/blog',
+      href: '/blogs',
     },
     {
       label: 'Contact ',

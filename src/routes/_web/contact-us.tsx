@@ -2,8 +2,39 @@ import { createFileRoute } from '@tanstack/react-router'
 import Container from '@/components/Container'
 import { ContactPage } from '@/components/contact-page'
 
+import { CONFIG } from '@/config/config'
+
 export const Route = createFileRoute('/_web/contact-us')({
   component: ContactUs,
+  head: () => ({
+    meta: [
+      {
+        title: `Contact Us | ${CONFIG.title}`,
+        content: 'Get in touch with us.',
+      },
+      {
+        name: 'description',
+        content: 'Get in touch with us.',
+      },
+      {
+        property: 'og:title',
+        content: `Contact Us | ${CONFIG.title}`,
+      },
+      {
+        property: 'og:description',
+        content: 'Get in touch with us.',
+      },
+      {
+        property: 'og:image',
+        content: CONFIG.profilePic,
+      },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: `Contact Us | ${CONFIG.title}` },
+      { name: 'twitter:description', content: 'Get in touch with us.' },
+      { name: 'twitter:image', content: CONFIG.profilePic },
+    ],
+  }),
 })
 
 function ContactUs() {

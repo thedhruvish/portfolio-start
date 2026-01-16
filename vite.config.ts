@@ -15,7 +15,15 @@ const config = defineConfig({
       projects: ['./tsconfig.json'],
     }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      prerender: {
+        enabled: true,
+        routes: ['/', '/contact-us'],
+        autoSubfolderIndex: true,
+        crawlLinks: true,
+        filter: ({ path }) => !path.startsWith('/admin'),
+      },
+    }),
     viteReact(),
   ],
 })

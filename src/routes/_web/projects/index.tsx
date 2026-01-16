@@ -14,12 +14,46 @@ import { TechIconsMap } from '@/config/tech-icons-map'
 import { getPublicProjectsFn } from '@/functions/projects'
 import { ProjectCardSkeleton } from '@/components/ProjectCardSkeleton'
 
+import { CONFIG } from '@/config/config'
+
 export const Route = createFileRoute('/_web/projects/')({
   component: ProjectsPage,
   loader: () => {
     const projects = getPublicProjectsFn()
     return { projects: defer(projects) }
   },
+  head: () => ({
+    meta: [
+      {
+        title: `Projects | ${CONFIG.title}`,
+        content: 'Check out my latest projects and open source contributions.',
+      },
+      {
+        name: 'description',
+        content: 'Check out my latest projects and open source contributions.',
+      },
+      {
+        property: 'og:title',
+        content: `Projects | ${CONFIG.title}`,
+      },
+      {
+        property: 'og:description',
+        content: 'Check out my latest projects and open source contributions.',
+      },
+      {
+        property: 'og:image',
+        content: CONFIG.profilePic,
+      },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: `Projects | ${CONFIG.title}` },
+      {
+        name: 'twitter:description',
+        content: 'Check out my latest projects and open source contributions.',
+      },
+      { name: 'twitter:image', content: CONFIG.profilePic },
+    ],
+  }),
 })
 
 function ProjectsPage() {

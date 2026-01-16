@@ -9,6 +9,11 @@ import { getProfileFn } from '@/functions/admin'
 export const Route = createFileRoute('/_web')({
   component: RouteComponent,
   loader: async () => await getProfileFn(),
+  headers: () => ({
+    'Cache-Control':
+      'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400',
+    'CDN-Cache-Control': 'max-age=3600',
+  }),
 })
 
 function RouteComponent() {
