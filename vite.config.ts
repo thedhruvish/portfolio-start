@@ -43,15 +43,7 @@ const config = defineConfig({
         skipWaiting: true,
       },
     }),
-    tanstackStart({
-      prerender: {
-        enabled: true,
-        routes: ['/', '/contact-us'],
-        autoSubfolderIndex: true,
-        crawlLinks: true,
-        filter: ({ path }) => !path.startsWith('/admin'),
-      },
-    }),
+    tanstackStart(),
     viteReact(),
   ],
 })
