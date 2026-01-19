@@ -1,12 +1,12 @@
-import { Await, Link, createFileRoute, defer } from '@tanstack/react-router'
-import { Suspense } from 'react'
-import { BlogCard } from '@/components/BlogCard'
-import { BlogsSkeleton } from '@/components/BlogsSkeleton'
+import { createFileRoute, defer } from '@tanstack/react-router'
+// import { Suspense } from 'react'
+// import { BlogCard } from '@/components/BlogCard'
+// import { BlogsSkeleton } from '@/components/BlogsSkeleton'
 import Container from '@/components/Container'
 import Github from '@/components/Github'
 import { HeroSection } from '@/components/Hero-section'
-import { Projects } from '@/components/Projects'
-import { ProjectsSkeleton } from '@/components/ProjectsSkeleton'
+// import { Projects } from '@/components/Projects'
+// import { ProjectsSkeleton } from '@/components/ProjectsSkeleton'
 import { getProfileFn } from '@/functions/admin'
 import { getLatestBlogsFn } from '@/functions/blogs'
 import { getPublicProjectsFn } from '@/functions/projects'
@@ -58,26 +58,25 @@ export const Route = createFileRoute('/_web/')({
   component: RouteComponent,
   loader: async () => {
     const profile = await getProfileFn()
-    const latestBlogs = getLatestBlogsFn()
-    const projects = getPublicProjectsFn()
+    const latestBlogs = await getLatestBlogsFn()
+    const projects = await getPublicProjectsFn()
     return {
       profile,
-      latestBlogs: defer(latestBlogs),
-      projects: defer(projects),
+      latestBlogs,
+      projects,
     }
   },
   ssr: 'data-only',
 })
 
 function RouteComponent() {
-  const { profile, latestBlogs, projects } = Route.useLoaderData()
+  const { profile } = Route.useLoaderData()
 
   return (
     <>
       <Container>
         <HeroSection profile={profile} />
-        <section id="projects" className="pt-10 scroll-mt-24">
-          {/* Section Header */}
+        {/* <section id="projects" className="pt-10 scroll-mt-24">
           <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
               Projects
@@ -101,10 +100,10 @@ function RouteComponent() {
               {(data) => <Projects projects={data} />}
             </Await>
           </Suspense>
-        </section>
+        </section> */}
 
         {/* Latest Blogs Section */}
-        <section className="pt-10 scroll-mt-24">
+        {/* <section className="pt-10 scroll-mt-24">
           <div className="flex flex-col items-start justify-between gap-4 mb-10 sm:flex-row sm:items-end">
             <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
               Recent Blogs
@@ -135,7 +134,7 @@ function RouteComponent() {
               </Await>
             </Suspense>
           </div>
-        </section>
+        </section> */}
         <Github />
       </Container>
     </>
