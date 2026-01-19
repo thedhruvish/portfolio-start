@@ -13,42 +13,48 @@ import { getPublicProjectsFn } from '@/functions/projects'
 import { CONFIG } from '@/config/config'
 
 export const Route = createFileRoute('/_web/')({
-  head: ({ loaderData }) => ({
-    meta: [
-      {
-        title: loaderData?.profile.name || CONFIG.title,
-        content: loaderData?.profile.description || CONFIG.description,
-      },
-      {
-        name: 'description',
-        content: loaderData?.profile.description || CONFIG.description,
-      },
-      {
-        name: 'keywords',
-        content: loaderData?.profile.description,
-      },
-      {
-        property: 'og:title',
-        content: loaderData?.profile.name || CONFIG.title,
-      },
-      {
-        property: 'og:description',
-        content: loaderData?.profile.description || CONFIG.description,
-      },
-      {
-        property: 'og:image',
-        content: loaderData?.profile.image || CONFIG.profilePic,
-      },
-      { property: 'og:type', content: 'website' },
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: loaderData?.profile.name },
-      { name: 'twitter:description', content: loaderData?.profile.description },
-      {
-        name: 'twitter:image',
-        content: loaderData?.profile.image || CONFIG.profilePic,
-      },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const profile = loaderData?.profile
+    return {
+      meta: [
+        {
+          title: profile?.name || CONFIG.title,
+          content: profile?.description || CONFIG.description,
+        },
+        {
+          name: 'description',
+          content: profile?.description || CONFIG.description,
+        },
+        {
+          name: 'keywords',
+          content: profile?.description,
+        },
+        {
+          property: 'og:title',
+          content: profile?.name || CONFIG.title,
+        },
+        {
+          property: 'og:description',
+          content: profile?.description || CONFIG.description,
+        },
+        {
+          property: 'og:image',
+          content: profile?.image || CONFIG.profilePic,
+        },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: profile?.name },
+        {
+          name: 'twitter:description',
+          content: profile?.description,
+        },
+        {
+          name: 'twitter:image',
+          content: profile?.image || CONFIG.profilePic,
+        },
+      ],
+    }
+  },
   component: RouteComponent,
   loader: async () => {
     const profile = await getProfileFn()
