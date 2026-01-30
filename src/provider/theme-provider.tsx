@@ -65,7 +65,17 @@ export function ThemeProvider({
     theme,
     setTheme: (newTheme: Theme) => {
       localStorage.setItem(storageKey, newTheme)
-      setTheme(newTheme)
+      if (!document.startViewTransition) {
+        setTheme(newTheme)
+        return
+      }
+
+      document.startViewTransition({
+        update: () => {
+          setTheme(newTheme)
+        },
+        types: ['theme'],
+      })
     },
   }
 
