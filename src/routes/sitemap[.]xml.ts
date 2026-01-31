@@ -9,7 +9,7 @@ export const Route = createFileRoute('/sitemap.xml')({
 
         const baseUrl = 'https://dhruvish.in'
 
-        const staticRoutes = ['', '/contact-us', '/blogs', '/projects', '/auth']
+        const staticRoutes = ['', '/contact-us', '/blogs', '/projects',]
 
         const blogUrls = blogsData.data.map((b) => `/blogs/${b.slug}`)
 

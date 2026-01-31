@@ -14,6 +14,16 @@ import { Input } from '@/components/ui/input'
 import { checkAuthFn, loginFn } from '@/functions/auth'
 
 export const Route = createFileRoute('/auth/')({
+  head: () => {
+    return {
+      meta: [
+        {
+          title: 'Auth',
+          content: 'Login',
+        },
+      ],
+    }
+  },
   beforeLoad: async () => {
     const auth = await checkAuthFn()
     if (auth) {
