@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -81,6 +82,14 @@ function BlogDetailComponent() {
 
   if (!blog) throw notFound()
 
+  const [likes, setLikes] = useState(blog.likes || 0)
+  const [isLiked, setIsLiked] = useState(false)
+
+  const handleLike = () => {
+    setLikes((prev: number) => prev + 1)
+    setIsLiked(true)
+  }
+
   return (
     <Container key={blog.id} className="py-10 max-w-4xl space-y-8 relative">
       <div className="hidden lg:block">
@@ -98,7 +107,12 @@ function BlogDetailComponent() {
         </div>
 
         <div className="absolute top-10 -right-20">
-          <BlogLikeButton blogId={blog.id} initialLikes={blog.likes || 0} />
+          <BlogLikeButton
+            blogId={blog.id}
+            likes={likes}
+            isLiked={isLiked}
+            onLike={handleLike}
+          />
         </div>
       </div>
       {/* Mobile: Back Button & Like Button Row */}
@@ -113,7 +127,12 @@ function BlogDetailComponent() {
             Back to Blogs
           </Link>
         </Button>
-        <BlogLikeButton blogId={blog.id} initialLikes={blog.likes || 0} />
+        <BlogLikeButton
+          blogId={blog.id}
+          likes={likes}
+          isLiked={isLiked}
+          onLike={handleLike}
+        />
       </div>
       {/* Hero Section */}
       <div className="space-y-6 text-center">
@@ -133,8 +152,6 @@ function BlogDetailComponent() {
             <span>
               Published {dayjs(blog.createdAt).format('MMMM D, YYYY')}
             </span>
-            <span>•</span>
-            <span>{dayjs(blog.createdAt).fromNow()}</span>
           </div>
         )}
       </div>
@@ -161,7 +178,12 @@ function BlogDetailComponent() {
         <p className="text-muted-foreground font-medium">
           Enjoyed this post? Give it some love!
         </p>
-        <BlogLikeButton blogId={blog.id} initialLikes={blog.likes || 0} />
+        <BlogLikeButton
+          blogId={blog.id}
+          likes={likes}
+          isLiked={isLiked}
+          onLike={handleLike}
+        />
       </div>
       <hr className="border-border/50" />
       {/* Suggested Blogs */}

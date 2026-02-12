@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { ArrowRight, Calendar } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
@@ -67,7 +67,7 @@ export const BlogCard = ({ blog, className, index = 0 }: BlogCardProps) => {
               )}
 
               {/* Date Badge Overlay */}
-              {blog.createdAt && (
+              {/* {blog.createdAt && (
                 <div className="absolute top-4 right-4 backdrop-blur-md">
                   <Badge
                     variant="secondary"
@@ -77,7 +77,7 @@ export const BlogCard = ({ blog, className, index = 0 }: BlogCardProps) => {
                     {dayjs(blog.createdAt).fromNow()}
                   </Badge>
                 </div>
-              )}
+              )} */}
             </div>
 
             <CardContent className="p-6 space-y-4">

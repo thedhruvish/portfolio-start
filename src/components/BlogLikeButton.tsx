@@ -7,16 +7,18 @@ import { cn } from '@/lib/utils'
 
 interface BlogLikeButtonProps {
   blogId: number
-  initialLikes: number
+  likes: number
+  isLiked: boolean
+  onLike: () => void
 }
 
 export const BlogLikeButton = ({
   blogId,
-  initialLikes,
+  likes,
+  isLiked,
+  onLike,
 }: BlogLikeButtonProps) => {
-  const [likes, setLikes] = useState(initialLikes)
   const [sessionLikes, setSessionLikes] = useState(0)
-  const [isLiked, setIsLiked] = useState(false)
   const [debouncedSessionLikes] = useDebounce(sessionLikes, 1000)
   const prevDebouncedSessionLikesRef = useRef(0)
 
@@ -25,10 +27,9 @@ export const BlogLikeButton = ({
     Array<{ id: number; x: number; y: number }>
   >([])
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    setLikes((prev) => prev + 1)
+  const handleClick = () => {
+    onLike()
     setSessionLikes((prev) => prev + 1)
-    setIsLiked(true)
 
     const x = Math.random() * 40 - 20
     const id = Date.now() + Math.random()

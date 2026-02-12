@@ -18,7 +18,7 @@ const COOKIE_NAME = 'Auth'
 export const isValidTurnstileToken = createIsomorphicFn().server(
   async (turnstileToken: string) => {
     const formData = new FormData()
-    formData.append('secret', process.env.TURNSTILE_SECRET_KEY!)
+    formData.append('secret', process.env.TURNSTILE_SECRET_KEY)
     formData.append('response', turnstileToken)
     const turnstileResult = await fetch(
       'https://challenges.cloudflare.com/turnstile/v0/siteverify',
@@ -63,7 +63,7 @@ export const loginFn = createServerFn({ method: 'POST' })
 
 export const logoutFn = createServerFn().handler(() => {
   deleteCookie(COOKIE_NAME)
-  throw redirect({ to: '/' })
+  redirect({ to: '/' })
 })
 
 export const checkAuthFn = createServerFn().handler(() => {
