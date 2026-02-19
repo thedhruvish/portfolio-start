@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
 import { BlogForm } from '@/components/blog-form'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { getPublicTagsFn } from '@/functions/blogs'
 import { getBlogFn } from '@/functions/admin'
 
@@ -32,13 +33,26 @@ function EditBlogPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Edit Blog</h2>
+        <div className="flex gap-2">
+          <Button variant={'outline'} asChild>
+            <Link to="/admin/blogs">Back</Link>
+          </Button>
+          <Button form="edit-blog-form" type="submit">
+            Save Blog
+          </Button>
+        </div>
       </div>
       <Card>
         <CardHeader>
           <CardTitle>{blog.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <BlogForm initialValues={initialValues} suggestions={tags} />
+          <BlogForm
+            initialValues={initialValues}
+            suggestions={tags}
+            id="edit-blog-form"
+            hideSubmit={true}
+          />
         </CardContent>
       </Card>
     </div>

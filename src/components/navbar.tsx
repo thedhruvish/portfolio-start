@@ -33,6 +33,7 @@ export const Navbar = ({ className }: { className?: string }) => {
         >
           Contact
         </Link>
+        
         <div className="flex items-center justify-center">
           <ModeToggle />
         </div>

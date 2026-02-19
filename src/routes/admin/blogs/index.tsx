@@ -8,17 +8,11 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Eye, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Eye, Pencil, Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { deleteBlogFn, getBlogsFn } from '@/functions/admin'
-import { Badge } from '@/components/ui/badge'
+import { deleteBlogFn, getBlogsFn, updateBlogStatusFn } from '@/functions/admin'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import {
   Table,
@@ -64,9 +58,30 @@ function BlogsListPage() {
     columnHelper.accessor('published', {
       header: 'Status',
       cell: (info) => (
-        <Badge variant={info.getValue() ? 'default' : 'secondary'}>
-          {info.getValue() ? 'Published' : 'Draft'}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <Switch
+            checked={!!info.getValue()}
+            onCheckedChange={async (checked) => {
+              try {
+                await updateBlogStatusFn({
+                  data: {
+                    id: info.row.original.id,
+                    published: checked,
+                  },
+                })
+                router.invalidate()
+                toast.success(
+                  `Blog ${checked ? 'published' : 'unpublished'} successfully`,
+                )
+              } catch (error) {
+                toast.error('Failed to update blog status')
+              }
+            }}
+          />
+          <span className="text-sm text-muted-foreground">
+            {info.getValue()}
+          </span>
+        </div>
       ),
     }),
     columnHelper.accessor('createdAt', {
@@ -78,51 +93,46 @@ function BlogsListPage() {
     }),
     columnHelper.display({
       id: 'actions',
+      header: 'Actions',
       cell: (info) => {
         const blog = info.row.original
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link to="/admin/blogs/$id" params={{ id: blog.id.toString() }}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  View
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  to="/admin/blogs/$id/edit"
-                  params={{ id: blog.id.toString() }}
-                >
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={async () => {
-                  if (confirm('Are you sure you want to delete this blog?')) {
-                    try {
-                      await deleteBlogFn({ data: blog.id })
-                      toast.success('Blog deleted')
-                      router.invalidate()
-                    } catch (e) {
-                      toast.error('Failed to delete blog')
-                    }
-                  }
-                }}
-                className="text-red-600 focus:text-red-600"
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" asChild>
+              <Link to="/admin/blogs/$id" params={{ id: blog.id.toString() }}>
+                <Eye className="h-4 w-4" />
+                <span className="sr-only">View</span>
+              </Link>
+            </Button>
+            <Button variant="ghost" size="icon" asChild>
+              <Link
+                to="/admin/blogs/$id/edit"
+                params={{ id: blog.id.toString() }}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <Pencil className="h-4 w-4" />
+                <span className="sr-only">Edit</span>
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+              onClick={async () => {
+                if (confirm('Are you sure you want to delete this blog?')) {
+                  try {
+                    await deleteBlogFn({ data: blog.id })
+                    toast.success('Blog deleted')
+                    router.invalidate()
+                  } catch (e) {
+                    toast.error('Failed to delete blog')
+                  }
+                }
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="sr-only">Delete</span>
+            </Button>
+          </div>
         )
       },
     }),
@@ -151,7 +161,7 @@ function BlogsListPage() {
         </Button>
       </div>
 
-      <div className="flex items-center py-4">
+      <div className="flex items-center">
         <Input
           placeholder="Filter blogs..."
           value={globalFilter}

@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
 import { CommandMenu } from '@/components/command-menu'
 import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/admin')({
   beforeLoad: async () => {
@@ -12,6 +13,20 @@ export const Route = createFileRoute('/admin')({
       throw redirect({ to: '/auth' })
     }
   },
+  headers: () => ({
+    'Cache-Control': 'no-store',
+  }),
+  head: () => ({
+    meta: [
+      {
+        title: 'Dashboard | Admin',
+      },
+      {
+        name: 'robots',
+        content: 'noindex, nofollow',
+      },
+    ],
+  }),
   ssr: false,
   component: RouteComponent,
 })
@@ -27,6 +42,9 @@ function RouteComponent() {
           <div className="flex-1">
             <h1 className="font-semibold text-lg">Admin Console</h1>
           </div>
+          <a href="/" target="_blank">
+            <Button variant={'link'}>Home</Button>
+          </a>
           <div className="ml-auto flex items-center gap-2">
             <CommandMenu />
           </div>

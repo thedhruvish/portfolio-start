@@ -217,3 +217,20 @@ export const deleteBlogFn = createServerFn({ method: 'POST' })
     await db.delete(blogs).where(eq(blogs.id, id))
     return { success: true }
   })
+
+export const updateBlogStatusFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    z
+      .object({
+        id: z.number(),
+        published: z.boolean(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data }) => {
+    await db
+      .update(blogs)
+      .set({ published: data.published, updatedAt: new Date() })
+      .where(eq(blogs.id, data.id))
+    return { success: true }
+  })

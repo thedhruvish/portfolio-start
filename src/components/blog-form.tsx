@@ -48,9 +48,13 @@ type BlogFormValues = z.infer<typeof BlogSchema>
 export function BlogForm({
   initialValues,
   suggestions = [],
+  id = 'blog-form',
+  hideSubmit = false,
 }: {
   initialValues?: BlogFormValues
   suggestions?: Array<string>
+  id?: string
+  hideSubmit?: boolean
 }) {
   const router = useRouter()
   const [tagInput, setTagInput] = useState('')
@@ -89,6 +93,7 @@ export function BlogForm({
 
   return (
     <form
+      id={id}
       onSubmit={(e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -340,23 +345,25 @@ export function BlogForm({
           </div>
         )}
       />
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-        children={([canSubmit, isSubmitting]) => (
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.history.back()}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!canSubmit}>
-              {isSubmitting ? 'Saving...' : 'Save Blog'}
-            </Button>
-          </div>
-        )}
-      />
+      {!hideSubmit && (
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+          children={([canSubmit, isSubmitting]) => (
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.history.back()}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!canSubmit}>
+                {isSubmitting ? 'Saving...' : 'Save Blog'}
+              </Button>
+            </div>
+          )}
+        />
+      )}
     </form>
   )
 }
