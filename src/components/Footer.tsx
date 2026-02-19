@@ -10,7 +10,7 @@ export const Footer = () => {
   return (
     <Container>
       <footer className="relative border-t bg-background/50 backdrop-blur-sm">
-        <div className="relative flex items-center justify-center overflow-hidden py-24 md:py-40">
+        <div className="relative flex items-center justify-center overflow-hidden py-5 md:py-10">
           <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent via-muted/10 to-transparent dark:via-muted/20" />
 
           <motion.h1

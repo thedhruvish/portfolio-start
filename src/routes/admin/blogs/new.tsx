@@ -20,6 +20,17 @@ function NewBlogPage() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Create Blog</h2>
         <div className="flex gap-2">
+          <Button
+            variant={'outline'}
+            onClick={() => {
+              if (confirm('Are you sure you want to clear the form cache?')) {
+                localStorage.removeItem('blog-new-form')
+                window.location.reload()
+              }
+            }}
+          >
+            Clear Cache
+          </Button>
           <Button variant={'outline'} asChild>
             <Link to="/admin/blogs">Back</Link>
           </Button>
@@ -37,6 +48,7 @@ function NewBlogPage() {
             suggestions={tags}
             id="create-blog-form"
             hideSubmit={true}
+            persistenceKey="blog-new-form"
           />
         </CardContent>
       </Card>

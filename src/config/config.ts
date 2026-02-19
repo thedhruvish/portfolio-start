@@ -8,6 +8,7 @@ export const CONFIG = {
   title: 'Backend dev',
   description: "Freelancer | Let's work together",
   profilePic: 'https://github.com/thedhruvish.png',
+  ogImage: "https://dhruvish.in/og.png",
   SOCIAL_MEDIA: {
     github: 'https://github.com/thedhruvish',
     linkedin: 'https://linkedin.com/in/dhruvishlathiya',

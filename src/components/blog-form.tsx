@@ -2,8 +2,8 @@ import { useForm } from '@tanstack/react-form'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { useRouter } from '@tanstack/react-router'
-import { Maximize2, Minimize2, Plus, X } from 'lucide-react'
-import { useState } from 'react'
+import { Loader2, Maximize2, Minimize2, Plus, X } from 'lucide-react'
+import { Suspense, lazy, useState } from 'react'
 import { Switch } from './ui/switch'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,6 @@ import {
   FieldError as ShadcnFieldError,
   FieldLabel as ShadcnFieldLabel,
 } from '@/components/ui/field'
-import { BlockEditor } from '@/components/block-editor'
 import { createBlogFn, updateBlogFn } from '@/functions/admin'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -30,6 +29,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { useBlogPersistence } from '@/hooks/use-blog-persistence'
+// import { BlockEditor } from '@/components/block-editor'
+
+const BlockEditor = lazy(() =>
+  import('@/components/block-editor').then((module) => ({
+    default: module.BlockEditor,
+  })),
+)
 
 const BlogSchema = z.object({
   id: z.number().optional(),
@@ -50,11 +57,13 @@ export function BlogForm({
   suggestions = [],
   id = 'blog-form',
   hideSubmit = false,
+  persistenceKey,
 }: {
   initialValues?: BlogFormValues
   suggestions?: Array<string>
   id?: string
   hideSubmit?: boolean
+  persistenceKey?: string
 }) {
   const router = useRouter()
   const [tagInput, setTagInput] = useState('')
@@ -83,6 +92,9 @@ export function BlogForm({
           await createBlogFn({ data: value })
           toast.success('Blog created')
         }
+        if (persistenceKey) {
+          localStorage.removeItem(persistenceKey)
+        }
         router.navigate({ to: '/admin/blogs' })
       } catch (error) {
         toast.error('Failed to save blog')
@@ -90,6 +102,8 @@ export function BlogForm({
       }
     },
   })
+
+  useBlogPersistence(persistenceKey || '', form)
 
   return (
     <form
@@ -335,13 +349,21 @@ export function BlogForm({
                 )}
               </Button>
             </div>
-            <BlockEditor
-              value={field.state.value}
-              onChange={(val) => field.handleChange(val)}
-              className={
-                isFullScreen ? 'min-h-[calc(100vh-100px)] border-none' : ''
+            <Suspense
+              fallback={
+                <div className="flex h-[400px] w-full items-center justify-center rounded-md border">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
               }
-            />
+            >
+              <BlockEditor
+                value={field.state.value}
+                onChange={(val) => field.handleChange(val)}
+                className={
+                  isFullScreen ? 'min-h-[calc(100vh-100px)] border-none' : ''
+                }
+              />
+            </Suspense>
           </div>
         )}
       />

@@ -22,14 +22,17 @@ export function EnhancedImage({
   fallbackSrc = '/not-found.png',
   ...props
 }: EnhancedImageProps) {
-  /* ───────────── STATE (only what is necessary) ───────────── */
+  /* ───────────── STATE ───────────── */
   const [isOpen, setIsOpen] = React.useState(false)
+  const [isLoaded, setIsLoaded] = React.useState(false)
+  const [hasError, setHasError] = React.useState(false)
 
-  /* ───────────── REFS (no re-render) ───────────── */
-  const hasEverLoadedRef = React.useRef(false)
-  const hasErrorRef = React.useRef(false)
+  /* ───────────── IMAGE REF (CRITICAL FOR SHIMMER FIX) ───────────── */
+  const imgRef = React.useRef<HTMLImageElement | null>(null)
 
-  const id = React.useId()
+  /* ───────────── STABLE ID ───────────── */
+  const idRef = React.useRef<string>(crypto.randomUUID())
+  const id = idRef.current
 
   /* ───────────── MOTION VALUES ───────────── */
   const scale = useMotionValue(1)
@@ -42,45 +45,45 @@ export function EnhancedImage({
     y.set(0)
   }
 
+  /* ───────────── RESET ON SRC CHANGE ───────────── */
+  React.useEffect(() => {
+    setIsLoaded(false)
+    setHasError(false)
+    resetTransform()
+  }, [src])
+
+  /* ───────────── SHIMMER FIX (CACHED IMAGE HANDLING) ───────────── */
+  React.useEffect(() => {
+    const img = imgRef.current
+    if (!img) return
+
+    // ✅ If image is cached, onLoad may not fire
+    if (img.complete && img.naturalWidth > 0) {
+      setIsLoaded(true)
+    }
+  }, [src])
+
   /* ───────────── DEVICE DETECTION ───────────── */
   const isTouchDevice =
     typeof window !== 'undefined' &&
     ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
-  /* ───────────── IMAGE LOAD (ONLY ONCE) ───────────── */
-  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    if (hasEverLoadedRef.current) return
-
-    const img = e.currentTarget
-    const done = () => {
-      hasEverLoadedRef.current = true
-    }
-
-    if ('decode' in img) {
-      img.decode().then(done).catch(done)
-    } else {
-      done()
-    }
-  }
-
-  const handleError = () => {
-    hasErrorRef.current = true
-  }
-
-  /* ───────────── ESC KEY CLOSE ───────────── */
+  /* ───────────── ESC + SCROLL LOCK ───────────── */
   React.useEffect(() => {
     if (!isOpen) return
+
+    const prevOverflow = document.body.style.overflow
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setIsOpen(false)
     }
 
-    window.addEventListener('keydown', onKeyDown)
     document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKeyDown)
 
     return () => {
+      document.body.style.overflow = prevOverflow
       window.removeEventListener('keydown', onKeyDown)
-      document.body.style.overflow = ''
       resetTransform()
     }
   }, [isOpen])
@@ -95,29 +98,30 @@ export function EnhancedImage({
           aspectRatio,
           className,
         )}
-        onClick={() => !hasErrorRef.current && setIsOpen(true)}
+        onClick={() => !hasError && setIsOpen(true)}
       >
-        {/* Shimmer ONLY before first load */}
-        {!hasEverLoadedRef.current && (
+        {/* ✅ SHIMMER */}
+        {!isLoaded && !hasError && (
           <div className="absolute inset-0 animate-pulse bg-muted" />
         )}
 
         <motion.img
+          ref={imgRef}
           layoutId={`image-${id}`}
-          src={hasErrorRef.current ? fallbackSrc : src}
+          src={hasError ? fallbackSrc : src}
           alt={alt}
           loading="lazy"
           decoding="async"
-          onLoad={handleLoad}
-          onError={handleError}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setHasError(true)}
           className={cn(
             'h-full w-full object-cover transition-opacity duration-300',
-            hasEverLoadedRef.current ? 'opacity-100' : 'opacity-0',
+            isLoaded ? 'opacity-100' : 'opacity-0',
           )}
           {...props}
         />
 
-        {hasErrorRef.current && (
+        {hasError && (
           <div className="absolute inset-0 flex items-center justify-center">
             <ImageOff className="h-8 w-8 text-muted-foreground" />
           </div>
@@ -126,8 +130,11 @@ export function EnhancedImage({
 
       {/* ───────────── FULLSCREEN VIEWER ───────────── */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !hasError && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={alt}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/95"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -153,15 +160,14 @@ export function EnhancedImage({
             >
               <motion.img
                 layoutId={`image-${id}`}
-                src={hasErrorRef.current ? fallbackSrc : src}
+                src={src}
                 alt={alt}
                 style={{ scale, x, y }}
-                drag={isTouchDevice && scale.get() === 1 ? 'y' : false}
+                drag={isTouchDevice ? 'y' : false}
                 dragElastic={0.25}
                 dragConstraints={{ top: 0, bottom: 0 }}
                 onDragEnd={(_, info) => {
                   if (!isTouchDevice) return
-
                   if (info.offset.y > 120 || info.velocity.y > 800) {
                     setIsOpen(false)
                   } else {

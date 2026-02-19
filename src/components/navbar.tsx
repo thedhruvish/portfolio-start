@@ -3,37 +3,40 @@ import { cn } from '../lib/utils'
 import { Menu } from './ui/navbar-menu'
 import { ModeToggle } from './mode-toggle'
 
+const navMenuList = [
+  {
+    title: 'Home',
+    href: '/',
+  },
+  {
+    title: 'Projects',
+    href: '/projects',
+  },
+  {
+    title: 'Blogs',
+    href: '/blogs',
+  },
+  {
+    title: 'Contact',
+    href: '/contact-us',
+  },
+] as const
+
 export const Navbar = ({ className }: { className?: string }) => {
   return (
     <div
-      className={cn('fixed top-10 inset-x-0 max-w-2xl mx-auto z-50', className)}
+      className={cn(
+        'fixed top-10 inset-x-0 max-w-2xl  mx-auto z-50',
+        className,
+      )}
     >
-      <Menu setActive={() => {}}>
-        <Link
-          to="/"
-          className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
-        >
-          Home
-        </Link>
-        <Link
-          to="/projects"
-          className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
-        >
-          Project
-        </Link>
-        <Link
-          to="/blogs"
-          className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
-        >
-          Blog
-        </Link>
-        <Link
-          to="/contact-us"
-          className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"
-        >
-          Contact
-        </Link>
-        
+      <Menu   setActive={() => {}}>
+        {navMenuList.map((item) => (
+          <Link key={item.title} to={item.href} className="cursor-pointer">
+            {item.title}
+          </Link>
+        ))}
+
         <div className="flex items-center justify-center">
           <ModeToggle />
         </div>

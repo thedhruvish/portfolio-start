@@ -42,7 +42,7 @@ export const Route = createFileRoute('/_web/projects/')({
       },
       {
         property: 'og:image',
-        content: CONFIG.profilePic,
+        content: CONFIG.ogImage,
       },
       { property: 'og:type', content: 'website' },
       { name: 'twitter:card', content: 'summary_large_image' },
@@ -51,7 +51,7 @@ export const Route = createFileRoute('/_web/projects/')({
         name: 'twitter:description',
         content: 'Check out my latest projects and open source contributions.',
       },
-      { name: 'twitter:image', content: CONFIG.profilePic },
+      { name: 'twitter:image', content: CONFIG.ogImage },
     ],
   }),
 })

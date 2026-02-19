@@ -131,6 +131,7 @@ const AdminBlogsIdEditRoute = AdminBlogsIdEditRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof WebIndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -138,18 +139,17 @@ export interface FileRoutesByFullPath {
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
-  '/': typeof WebIndexRoute
   '/admin/': typeof AdminIndexRoute
-  '/auth': typeof AuthIndexRoute
+  '/auth/': typeof AuthIndexRoute
   '/blogs/$slug': typeof WebBlogsSlugRoute
   '/projects/$slug': typeof WebProjectsSlugRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
-  '/blogs': typeof WebBlogsIndexRoute
-  '/projects': typeof WebProjectsIndexRoute
-  '/admin/blogs': typeof AdminBlogsIndexRoute
-  '/admin/contacts': typeof AdminContactsIndexRoute
+  '/blogs/': typeof WebBlogsIndexRoute
+  '/projects/': typeof WebProjectsIndexRoute
+  '/admin/blogs/': typeof AdminBlogsIndexRoute
+  '/admin/contacts/': typeof AdminContactsIndexRoute
   '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
-  '/admin/blogs/$id': typeof AdminBlogsIdIndexRoute
+  '/admin/blogs/$id/': typeof AdminBlogsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
@@ -197,6 +197,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/admin'
     | '/robots.txt'
     | '/sitemap.xml'
@@ -204,18 +205,17 @@ export interface FileRouteTypes {
     | '/admin/profile'
     | '/admin/projects'
     | '/admin/subscribers'
-    | '/'
     | '/admin/'
-    | '/auth'
+    | '/auth/'
     | '/blogs/$slug'
     | '/projects/$slug'
     | '/admin/blogs/new'
-    | '/blogs'
-    | '/projects'
-    | '/admin/blogs'
-    | '/admin/contacts'
+    | '/blogs/'
+    | '/projects/'
+    | '/admin/blogs/'
+    | '/admin/contacts/'
     | '/admin/blogs/$id/edit'
-    | '/admin/blogs/$id'
+    | '/admin/blogs/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/robots.txt'
@@ -294,14 +294,14 @@ declare module '@tanstack/react-router' {
     '/_web': {
       id: '/_web'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof WebRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/': {
       id: '/auth/'
       path: '/auth'
-      fullPath: '/auth'
+      fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -350,28 +350,28 @@ declare module '@tanstack/react-router' {
     '/admin/contacts/': {
       id: '/admin/contacts/'
       path: '/contacts'
-      fullPath: '/admin/contacts'
+      fullPath: '/admin/contacts/'
       preLoaderRoute: typeof AdminContactsIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/admin/blogs/': {
       id: '/admin/blogs/'
       path: '/blogs'
-      fullPath: '/admin/blogs'
+      fullPath: '/admin/blogs/'
       preLoaderRoute: typeof AdminBlogsIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
     '/_web/projects/': {
       id: '/_web/projects/'
       path: '/projects'
-      fullPath: '/projects'
+      fullPath: '/projects/'
       preLoaderRoute: typeof WebProjectsIndexRouteImport
       parentRoute: typeof WebRouteRoute
     }
     '/_web/blogs/': {
       id: '/_web/blogs/'
       path: '/blogs'
-      fullPath: '/blogs'
+      fullPath: '/blogs/'
       preLoaderRoute: typeof WebBlogsIndexRouteImport
       parentRoute: typeof WebRouteRoute
     }
@@ -399,7 +399,7 @@ declare module '@tanstack/react-router' {
     '/admin/blogs/$id/': {
       id: '/admin/blogs/$id/'
       path: '/blogs/$id'
-      fullPath: '/admin/blogs/$id'
+      fullPath: '/admin/blogs/$id/'
       preLoaderRoute: typeof AdminBlogsIdIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }

@@ -1,4 +1,3 @@
-import { useTheme } from 'next-themes'
 import { Toaster as Sonner } from 'sonner'
 import {
   IconAlertOctagon,
@@ -8,6 +7,7 @@ import {
   IconLoader,
 } from '@tabler/icons-react'
 import type { ToasterProps } from 'sonner'
+import { useTheme } from '@/provider/theme-provider'
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = 'system' } = useTheme()

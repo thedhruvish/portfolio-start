@@ -1,15 +1,12 @@
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
 import { Calendar, ChevronLeft } from 'lucide-react'
 import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { getBlogFn } from '@/functions/admin'
 import { BlockEditor } from '@/components/block-editor'
 import Container from '@/components/Container'
 import { EnhancedImage } from '@/components/enhanced-image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-
-dayjs.extend(relativeTime)
 
 export const Route = createFileRoute('/admin/blogs/$id/')({
   loader: async ({ params: { id } }) => {

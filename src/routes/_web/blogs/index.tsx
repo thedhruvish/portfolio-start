@@ -147,7 +147,7 @@ function BlogListComponent() {
     }
 
     const currentTags = tags || []
-    let newTags
+    let newTags: Array<string>
 
     if (currentTags.includes(val)) {
       newTags = currentTags.filter((t) => t !== val)
@@ -176,37 +176,35 @@ function BlogListComponent() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-muted/30 p-4 rounded-lg border border-border/50">
-        <div className="relative w-full md:w-80">
+      <div className="flex flex-col gap-4 bg-muted/30 p-4 rounded-lg border border-border/50">
+        <div className="relative w-full">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search articles..."
             value={searchInput || ''}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="pl-9 bg-background"
+            className="pl-9 bg-background w-full"
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-          <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2 w-full">
+          <Badge
+            variant={!tags || tags.length === 0 ? 'default' : 'outline'}
+            className="cursor-pointer whitespace-nowrap px-4 py-1.5 text-sm"
+            onClick={() => handleTagChange('All')}
+          >
+            All
+          </Badge>
+          {(availableTags || []).map((t) => (
             <Badge
-              variant={!tags || tags.length === 0 ? 'default' : 'outline'}
-              className="cursor-pointer whitespace-nowrap"
-              onClick={() => handleTagChange('All')}
+              key={t}
+              variant={tags?.includes(t) ? 'default' : 'outline'}
+              className="cursor-pointer whitespace-nowrap px-4 py-1.5 text-sm"
+              onClick={() => handleTagChange(t)}
             >
-              All
+              {t}
             </Badge>
-            {(availableTags || []).map((t) => (
-              <Badge
-                key={t}
-                variant={tags?.includes(t) ? 'default' : 'outline'}
-                className="cursor-pointer whitespace-nowrap"
-                onClick={() => handleTagChange(t)}
-              >
-                {t}
-              </Badge>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 

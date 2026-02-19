@@ -34,6 +34,17 @@ function EditBlogPage() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">Edit Blog</h2>
         <div className="flex gap-2">
+          <Button
+            variant={'outline'}
+            onClick={() => {
+              if (confirm('Are you sure you want to clear the form cache?')) {
+                localStorage.removeItem(`blog-edit-form-${blog.id}`)
+                window.location.reload()
+              }
+            }}
+          >
+            Clear Cache
+          </Button>
           <Button variant={'outline'} asChild>
             <Link to="/admin/blogs">Back</Link>
           </Button>
@@ -52,6 +63,7 @@ function EditBlogPage() {
             suggestions={tags}
             id="edit-blog-form"
             hideSubmit={true}
+            persistenceKey={`blog-edit-form-${blog.id}`}
           />
         </CardContent>
       </Card>

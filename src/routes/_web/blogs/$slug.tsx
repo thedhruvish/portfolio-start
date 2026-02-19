@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { Calendar, ChevronLeft } from 'lucide-react'
+import dayjs from 'dayjs'
 import { BlockEditor } from '@/components/block-editor'
 import { BlogCard } from '@/components/BlogCard'
 import { BlogDetailSkeleton } from '@/components/BlogDetailSkeleton'
@@ -15,63 +14,64 @@ import { Button } from '@/components/ui/button'
 import { CONFIG } from '@/config/config'
 import { getPublicBlogBySlugFn } from '@/functions/blogs'
 
-dayjs.extend(relativeTime)
-
 export const Route = createFileRoute('/_web/blogs/$slug')({
   loader: async ({ params: { slug } }) => {
     const blog = await getPublicBlogBySlugFn({ data: slug })
     if (!blog) throw notFound()
     return { blog }
   },
+  head: ({ loaderData }) => {
+    if (!loaderData) throw notFound()
+    return {
+      meta: [
+        { title: loaderData.blog.title || CONFIG.title },
+        {
+          name: 'description',
+          content:
+            loaderData.blog.summary ||
+            loaderData.blog.title ||
+            CONFIG.description,
+        },
+        {
+          name: 'keywords',
+          content: loaderData.blog.tags.join(', '),
+        },
+        {
+          property: 'og:title',
+          content: loaderData.blog.title || CONFIG.title,
+        },
+        {
+          property: 'og:description',
+          content:
+            loaderData.blog.summary ||
+            loaderData.blog.title ||
+            CONFIG.description,
+        },
+        {
+          property: 'og:image',
+          content: loaderData.blog.thumbImage || CONFIG.ogImage,
+        },
+        { property: 'og:type', content: 'article' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        {
+          name: 'twitter:title',
+          content: loaderData.blog.title || CONFIG.title,
+        },
+        {
+          name: 'twitter:description',
 
-  meta: ({ loaderData }) => ({
-    meta: [
-      { title: loaderData.blog.title || CONFIG.title },
-      {
-        name: 'description',
-        content:
-          loaderData.blog.summary ||
-          loaderData.blog.title ||
-          CONFIG.description,
-      },
-      {
-        name: 'keywords',
-        content: loaderData.blog.tags.join(', '),
-      },
-      {
-        property: 'og:title',
-        content: loaderData.blog.title || CONFIG.title,
-      },
-      {
-        property: 'og:description',
-        content:
-          loaderData.blog.summary ||
-          loaderData.blog.title ||
-          CONFIG.description,
-      },
-      {
-        property: 'og:image',
-        content: loaderData.blog.thumbImage || CONFIG.profilePic,
-      },
-      { property: 'og:type', content: 'article' },
-      { name: 'twitter:card', content: 'summary_large_image' },
-      {
-        name: 'twitter:title',
-        content: loaderData.blog.title || CONFIG.title,
-      },
-      {
-        name: 'twitter:description',
-        content:
-          loaderData.blog.summary ||
-          loaderData.blog.title ||
-          CONFIG.description,
-      },
-      {
-        name: 'twitter:image',
-        content: loaderData.blog.thumbImage || CONFIG.profilePic,
-      },
-    ],
-  }),
+          content:
+            loaderData.blog.summary ||
+            loaderData.blog.title ||
+            CONFIG.description,
+        },
+        {
+          name: 'twitter:image',
+          content: loaderData.blog.thumbImage || CONFIG.ogImage,
+        },
+      ],
+    }
+  },
   component: BlogDetailComponent,
   staleTime: 5 * 60_000,
   pendingComponent: BlogDetailSkeleton,
@@ -137,7 +137,7 @@ function BlogDetailComponent() {
       {/* Hero Section */}
       <div className="space-y-6 text-center">
         <div className="flex items-center justify-center gap-2">
-          {blog.tags.map((tag) => (
+          {blog.tags.map((tag: any) => (
             <Badge key={tag} variant="secondary">
               {tag}
             </Badge>
