@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { toast } from 'sonner'
 import { useRouter } from '@tanstack/react-router'
 import { Loader2, Maximize2, Minimize2, Plus, X } from 'lucide-react'
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Switch } from './ui/switch'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -32,11 +32,7 @@ import {
 import { useBlogPersistence } from '@/hooks/use-blog-persistence'
 // import { BlockEditor } from '@/components/block-editor'
 
-const BlockEditor = lazy(() =>
-  import('@/components/block-editor').then((module) => ({
-    default: module.BlockEditor,
-  })),
-)
+import { BlockEditor } from '@/components/block-editor/lazy'
 
 const BlogSchema = z.object({
   id: z.number().optional(),
