@@ -30,7 +30,7 @@ export const Navbar = ({ className }: { className?: string }) => {
         className,
       )}
     >
-      <Menu   setActive={() => {}}>
+      <Menu setActive={() => {}}>
         {navMenuList.map((item) => (
           <Link key={item.title} to={item.href} className="cursor-pointer">
             {item.title}
