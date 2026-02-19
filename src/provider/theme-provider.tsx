@@ -34,9 +34,7 @@ export function ThemeProvider({
     const root = document.documentElement
 
     const applyTheme = (themeNew: Theme) => {
-      // ✅ MUST remove every time
-      root.classList.remove('light')
-      root.classList.remove('dark')
+      root.classList.remove('light', 'dark')
 
       if (themeNew === 'system') {
         root.classList.add(
@@ -51,7 +49,6 @@ export function ThemeProvider({
 
     applyTheme(theme)
 
-    // 🔒 Only listen to system changes in system mode
     if (theme !== 'system') return
 
     const media = window.matchMedia('(prefers-color-scheme: dark)')
@@ -65,16 +62,18 @@ export function ThemeProvider({
     theme,
     setTheme: (newTheme: Theme) => {
       localStorage.setItem(storageKey, newTheme)
-      if (!document.startViewTransition) {
+
+      const reduceMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
+
+      if (!document.startViewTransition || reduceMotion) {
         setTheme(newTheme)
         return
       }
 
-      document.startViewTransition({
-        update: () => {
-          setTheme(newTheme)
-        },
-        types: ['theme'],
+      document.startViewTransition(() => {
+        setTheme(newTheme)
       })
     },
   }

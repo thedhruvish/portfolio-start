@@ -162,26 +162,25 @@
   }
 }
 
-/* Circular Reveal for Theme Toggle */
-::view-transition-image-pair(root):active-view-transition-type(theme) {
-  animation-duration: 0.7s;
-  animation-timing-function: ease-in-out;
-}
+/* ============================
+   View Transitions (safe)
+   ============================ */
 
-::view-transition-old(root):active-view-transition-type(theme),
-::view-transition-new(root):active-view-transition-type(theme) {
-  animation: none;
-  mix-blend-mode: normal;
-}
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: both;
+  }
 
-::view-transition-old(root):active-view-transition-type(theme) {
-  z-index: 10;
-  animation: clip-out 0.7s ease-in-out forwards;
-}
+  ::view-transition-old(root) {
+    animation-name: blur-out;
+  }
 
-::view-transition-new(root):active-view-transition-type(theme) {
-  z-index: 1;
-  animation: clip-in 0.7s ease-in-out forwards;
+  ::view-transition-new(root) {
+    animation-name: blur-in;
+  }
 }
 
 @keyframes clip-out {

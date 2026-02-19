@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as WebRouteRouteImport } from './routes/_web/route'
@@ -33,6 +34,11 @@ import { Route as AdminBlogsIdEditRouteImport } from './routes/admin/blogs/$id/e
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RssDotxmlRoute = RssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/': typeof WebIndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/_web': typeof WebRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
+  '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_web/contact-us': typeof WebContactUsRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/robots.txt'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/contact-us'
     | '/admin/profile'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/robots.txt'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/contact-us'
     | '/admin/profile'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/_web'
     | '/admin'
     | '/robots.txt'
+    | '/rss.xml'
     | '/sitemap.xml'
     | '/_web/contact-us'
     | '/admin/profile'
@@ -264,6 +276,7 @@ export interface RootRouteChildren {
   WebRouteRoute: typeof WebRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  RssDotxmlRoute: typeof RssDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rss.xml': {
+      id: '/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/rss.xml'
+      preLoaderRoute: typeof RssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/robots.txt': {
@@ -467,6 +487,7 @@ const rootRouteChildren: RootRouteChildren = {
   WebRouteRoute: WebRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  RssDotxmlRoute: RssDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AuthIndexRoute: AuthIndexRoute,
 }
