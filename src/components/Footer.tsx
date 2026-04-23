@@ -28,7 +28,7 @@ export const Footer = () => {
                 ease: 'easeInOut',
               },
             }}
-            className="select-none text-center font-extrabold text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] text-foreground"
+            className="select-none text-center font-extrabold text-xl sm:text-7xl md:text-8xl lg:text-[8rem] text-foreground"
           >
             {CONFIG.name}
           </motion.h1>

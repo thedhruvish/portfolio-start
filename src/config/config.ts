@@ -15,7 +15,7 @@ export const CONFIG = {
     github: 'https://github.com/thedhruvish',
     linkedin: 'https://linkedin.com/in/dhruvishlathiya',
     x: 'https://x.com/dhruvishlathiya',
-    cal: 'https://cal.com/dhruvishlathiya/30min?overlayCalendar=true',
+    // cal: 'https://cal.com/dhruvishlathiya/30min?overlayCalendar=true',
     email: 'thedhruvish@gmail.com',
     githubUsername: 'thedhruvish',
   },

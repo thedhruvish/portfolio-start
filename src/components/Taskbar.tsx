@@ -86,31 +86,32 @@ const Taskbar = ({ profile }: TaskbarProps) => {
           </svg>
         </a>
       )}
-
-      <a
-        href={CONFIG.SOCIAL_MEDIA.cal}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="rounded-full  p-2 transition-transform duration-300 ease-in-out hover:-translate-y-2 hover:scale-105"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 21 21"
-          fill="currentColor"
+      {CONFIG.SOCIAL_MEDIA?.cal && (
+        <a
+          href={CONFIG.SOCIAL_MEDIA.cal}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full  p-2 transition-transform duration-300 ease-in-out hover:-translate-y-2 hover:scale-105"
         >
-          <text
-            x="0"
-            y="15"
-            fontFamily="Arial, sans-serif"
-            fontSize="12"
-            fontWeight="bold"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 21 21"
+            fill="currentColor"
           >
-            Cal.
-          </text>
-        </svg>
-      </a>
+            <text
+              x="0"
+              y="15"
+              fontFamily="Arial, sans-serif"
+              fontSize="12"
+              fontWeight="bold"
+            >
+              Cal.
+            </text>
+          </svg>
+        </a>
+      )}
 
       <div
         onMouseEnter={() => setHovered(true)}
