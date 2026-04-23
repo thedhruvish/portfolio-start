@@ -1,4 +1,4 @@
-import { pgTable, serial, text } from 'drizzle-orm/pg-core'
+import { integer, pgTable, serial, text } from 'drizzle-orm/pg-core'
 
 export const experiences = pgTable('experiences', {
   id: serial('id').primaryKey(),
@@ -6,6 +6,7 @@ export const experiences = pgTable('experiences', {
   position: text('position').notNull(),
   description: text('description').notNull(),
   duration: text('duration'), // e.g., "Jan 2020 - Present"
+  order: integer('order').default(0),
 })
 
 export type Experience = typeof experiences.$inferSelect

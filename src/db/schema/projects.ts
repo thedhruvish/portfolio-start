@@ -1,4 +1,4 @@
-import { pgTable, serial, text } from 'drizzle-orm/pg-core'
+import { integer, pgTable, serial, text } from 'drizzle-orm/pg-core'
 
 export const projects = pgTable('projects', {
   id: serial('id').primaryKey(),
@@ -8,6 +8,7 @@ export const projects = pgTable('projects', {
   github: text('github'),
   link: text('link'),
   tech: text('tech').array(),
+  order: integer('order').default(0),
 })
 
 export type Project = typeof projects.$inferSelect

@@ -155,6 +155,7 @@ function AdminProjects() {
                 github: '',
                 link: '',
                 tech: [],
+                order: 0,
               }
             }
             onSubmit={() => {
@@ -238,20 +239,37 @@ function ProjectForm({
         )}
       />
 
-      <form.Field
-        name="image"
-        children={(field) => (
-          <ShadcnField className="gap-2">
-            <ShadcnFieldLabel>Image URL</ShadcnFieldLabel>
-            <Input
-              name={field.name}
-              value={field.state.value || ''}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-          </ShadcnField>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <form.Field
+          name="image"
+          children={(field) => (
+            <ShadcnField className="gap-2">
+              <ShadcnFieldLabel>Image URL</ShadcnFieldLabel>
+              <Input
+                name={field.name}
+                value={field.state.value || ''}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+            </ShadcnField>
+          )}
+        />
+        <form.Field
+          name="order"
+          children={(field) => (
+            <ShadcnField className="gap-2">
+              <ShadcnFieldLabel>Display Order</ShadcnFieldLabel>
+              <Input
+                type="number"
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(Number(e.target.value))}
+              />
+            </ShadcnField>
+          )}
+        />
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <form.Field

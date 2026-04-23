@@ -135,6 +135,7 @@ function AdminExperiences() {
                 position: '',
                 description: '',
                 duration: '',
+                order: 0,
               }
             }
             onSubmit={() => {
@@ -218,23 +219,41 @@ function ExperienceForm({
         )}
       />
 
-      <form.Field
-        name="duration"
-        children={(field) => (
-          <ShadcnField className="gap-2">
-            <ShadcnFieldLabel>
-              Duration (e.g. Jan 2020 - Present)
-            </ShadcnFieldLabel>
-            <Input
-              name={field.name}
-              value={field.state.value || ''}
-              onBlur={field.handleBlur}
-              onChange={(e) => field.handleChange(e.target.value)}
-            />
-            <ShadcnFieldError errors={field.state.meta.errors} />
-          </ShadcnField>
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <form.Field
+          name="duration"
+          children={(field) => (
+            <ShadcnField className="gap-2">
+              <ShadcnFieldLabel>
+                Duration (e.g. Jan 2020 - Present)
+              </ShadcnFieldLabel>
+              <Input
+                name={field.name}
+                value={field.state.value || ''}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+              />
+              <ShadcnFieldError errors={field.state.meta.errors} />
+            </ShadcnField>
+          )}
+        />
+        <form.Field
+          name="order"
+          children={(field) => (
+            <ShadcnField className="gap-2">
+              <ShadcnFieldLabel>Display Order</ShadcnFieldLabel>
+              <Input
+                type="number"
+                name={field.name}
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(Number(e.target.value))}
+              />
+              <ShadcnFieldError errors={field.state.meta.errors} />
+            </ShadcnField>
+          )}
+        />
+      </div>
 
       <form.Field
         name="description"

@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { desc, eq, like, sql } from 'drizzle-orm'
+import { asc, desc, eq, like, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
 import { blogs, experiences, profile, projects, tags } from '@/db/schema'
@@ -10,11 +10,12 @@ export const ExperienceSchema = z.object({
   position: z.string().min(1),
   description: z.string().min(1),
   duration: z.string().optional(),
+  order: z.number(),
 })
 
 export const getExperiencesFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    return await db.select().from(experiences).orderBy(desc(experiences.id))
+    return await db.select().from(experiences).orderBy(asc(experiences.order))
   },
 )
 
@@ -51,7 +52,7 @@ const ProfileSchema = z.object({
   twitter: z.string().optional(),
   github: z.string().optional(),
   linkedin: z.string().optional(),
-  email: z.string().email().optional().or(z.literal('')),
+  email: z.email().optional().or(z.literal('')),
 })
 
 export const getProfileFn = createServerFn({ method: 'GET' }).handler(
@@ -87,11 +88,12 @@ export const ProjectSchema = z.object({
   github: z.string().optional(),
   link: z.string().optional(),
   tech: z.array(z.string()).optional(),
+  order: z.number(),
 })
 
 export const getProjectsFn = createServerFn({ method: 'GET' }).handler(
   async () => {
-    return await db.select().from(projects).orderBy(projects.id)
+    return await db.select().from(projects).orderBy(asc(projects.order))
   },
 )
 
