@@ -18,6 +18,7 @@ export const CONFIG = {
     // cal: 'https://cal.com/dhruvishlathiya/30min?overlayCalendar=true',
     email: 'thedhruvish@gmail.com',
     githubUsername: 'thedhruvish',
+    
   },
   navItems: [
     {

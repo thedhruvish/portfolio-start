@@ -43,7 +43,12 @@ const config = defineConfig({
         skipWaiting: true,
       },
     }),
-    tanstackStart(),
+    tanstackStart({
+      prerender: {
+        routes: ['/blogs/*'],
+        crawlLinks: true,
+      },
+    }),
     viteReact(),
   ],
 })

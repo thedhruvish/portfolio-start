@@ -28,7 +28,7 @@ export const Route = createFileRoute('/_web/blogs/$slug')({
         {
           name: 'description',
           content:
-            loaderData.blog.summary ||
+            loaderData.blog.description ||
             loaderData.blog.title ||
             CONFIG.description,
         },
@@ -43,7 +43,7 @@ export const Route = createFileRoute('/_web/blogs/$slug')({
         {
           property: 'og:description',
           content:
-            loaderData.blog.summary ||
+            loaderData.blog.description ||
             loaderData.blog.title ||
             CONFIG.description,
         },
@@ -59,9 +59,8 @@ export const Route = createFileRoute('/_web/blogs/$slug')({
         },
         {
           name: 'twitter:description',
-
           content:
-            loaderData.blog.summary ||
+            loaderData.blog.description ||
             loaderData.blog.title ||
             CONFIG.description,
         },
@@ -70,8 +69,31 @@ export const Route = createFileRoute('/_web/blogs/$slug')({
           content: loaderData.blog.thumbImage || CONFIG.ogImage,
         },
       ],
+      scripts: [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            headline: loaderData.blog.title,
+            description: loaderData.blog.description,
+            image: loaderData.blog.thumbImage,
+            author: {
+              '@type': 'Person',
+              name: CONFIG.name,
+            },
+            datePublished: loaderData.blog.published,
+          }),
+        },
+      ],
     }
   },
+  headers: () => ({
+    'Cache-Control':
+      'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+    'CDN-Cache-Control': 'max-age=3600',
+  }),
+
   component: BlogDetailComponent,
   staleTime: 5 * 60_000,
   pendingComponent: BlogDetailSkeleton,
