@@ -20,8 +20,12 @@ export const getPublicBlogsFn = createServerFn({ method: 'GET' })
 
     const filters = [eq(blogs.published, true)]
     if (search) {
-      const searchLower = `%${search.toLowerCase()}%`
-      filters.push(like(blogs.title, searchLower))
+      const searchLower = search.trim()
+      if (searchLower) {
+        filters.push(
+          sql`${blogs.searchVector} @@ plainto_tsquery('english', ${searchLower})`,
+        )
+      }
     }
     if (filterTags && filterTags.length > 0) {
       const subQuery = db
@@ -43,10 +47,13 @@ export const getPublicBlogsFn = createServerFn({ method: 'GET' })
         published: blogs.published,
         createdAt: blogs.createdAt,
         updatedAt: blogs.updatedAt,
+        rank: search
+          ? sql<number>`ts_rank(${blogs.searchVector}, plainto_tsquery('english', ${search}))`
+          : sql<number>`0`,
       })
       .from(blogs)
       .where(whereClause)
-      .orderBy(desc(blogs.createdAt))
+      .orderBy((t) => (search ? desc(t.rank) : desc(blogs.createdAt)))
       .limit(pageSize)
       .offset(offset)
 

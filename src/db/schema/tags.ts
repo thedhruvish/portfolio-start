@@ -1,10 +1,17 @@
-import { integer, pgTable, serial, text } from 'drizzle-orm/pg-core'
+import { index, integer, pgTable, serial, text } from 'drizzle-orm/pg-core'
 import { blogs } from './blogs'
 
-export const tags = pgTable('tags', {
-  id: serial('id').primaryKey(),
-  tag: text('tag').notNull(),
-  blogId: integer('blog_id')
-    .references(() => blogs.id, { onDelete: 'cascade' })
-    .notNull(),
-})
+export const tags = pgTable(
+  'tags',
+  {
+    id: serial('id').primaryKey(),
+    tag: text('tag').notNull(),
+    blogId: integer('blog_id')
+      .references(() => blogs.id, { onDelete: 'cascade' })
+      .notNull(),
+  },
+  (table) => ({
+    tagIdx: index('tags_tag_idx').on(table.tag),
+    blogIdIdx: index('tags_blog_id_idx').on(table.blogId),
+  }),
+)

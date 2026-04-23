@@ -5,6 +5,7 @@ export const profile = pgTable('profile', {
   name: text('name').notNull(),
   headline: text('headline'),
   description: text('description').notNull(),
+  keywords: text('keywords'),
   image: text('image'),
   resumeLink: text('resume_link'),
   twitter: text('twitter'),

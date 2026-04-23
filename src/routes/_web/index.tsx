@@ -16,42 +16,76 @@ import { CONFIG } from '@/config/config'
 export const Route = createFileRoute('/_web/')({
   head: ({ loaderData }) => {
     const profile = loaderData?.profile
+    const title = profile?.name || CONFIG.title
+    const description = profile?.description || CONFIG.description
+    const siteUrl = CONFIG.siteUrl
+
     return {
       meta: [
         {
-          title: profile?.name || CONFIG.title,
-          content: profile?.description || CONFIG.description,
+          title: title,
         },
         {
           name: 'description',
-          content: profile?.description || CONFIG.description,
+          content: description,
         },
         {
           name: 'keywords',
-          content: profile?.description,
+          content:
+            profile?.keywords ||
+            'Dhruvish Lathiya, Backend Developer, Freelancer, Node.js, PostgreSQL,Nodejs Developer, Ai developer, Drizzle ORM, React, TanStack Start',
         },
         {
           property: 'og:title',
-          content: profile?.name || CONFIG.title,
+          content: title,
         },
         {
           property: 'og:description',
-          content: profile?.description || CONFIG.description,
+          content: description,
         },
         {
           property: 'og:image',
           content: CONFIG.ogImage,
         },
+        {
+          property: 'og:url',
+          content: siteUrl,
+        },
         { property: 'og:type', content: 'profile' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: profile?.name },
+        { name: 'twitter:title', content: title },
         {
           name: 'twitter:description',
-          content: profile?.description,
+          content: description,
         },
         {
           name: 'twitter:image',
           content: CONFIG.ogImage,
+        },
+      ],
+      links: [
+        {
+          rel: 'canonical',
+          href: siteUrl,
+        },
+      ],
+      scripts: [
+        {
+          type: 'application/ld+json',
+          children: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            name: profile?.name || CONFIG.fullName,
+            jobTitle: profile?.headline || CONFIG.title,
+            description: description,
+            image: profile?.image || CONFIG.profilePic,
+            url: siteUrl,
+            sameAs: [
+              CONFIG.SOCIAL_MEDIA.github,
+              CONFIG.SOCIAL_MEDIA.linkedin,
+              CONFIG.SOCIAL_MEDIA.x,
+            ],
+          }),
         },
       ],
     }

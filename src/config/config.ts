@@ -5,6 +5,7 @@ export interface NavItem {
 export const CONFIG = {
   name: 'Dhruvish ',
   fullName: 'Dhruvish Lathiya',
+  siteUrl: 'https://dhruvish.in',
   title: 'Backend dev',
   description: "Freelancer | Let's work together",
   profilePic: 'https://github.com/thedhruvish.png',
@@ -18,7 +19,6 @@ export const CONFIG = {
     // cal: 'https://cal.com/dhruvishlathiya/30min?overlayCalendar=true',
     email: 'thedhruvish@gmail.com',
     githubUsername: 'thedhruvish',
-    
   },
   navItems: [
     {

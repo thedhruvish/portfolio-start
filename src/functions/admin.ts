@@ -47,6 +47,7 @@ const ProfileSchema = z.object({
   name: z.string().min(1),
   headline: z.string().optional(),
   description: z.string().min(1),
+  keywords: z.string().optional(),
   image: z.string().optional(),
   resumeLink: z.string().optional(),
   twitter: z.string().optional(),

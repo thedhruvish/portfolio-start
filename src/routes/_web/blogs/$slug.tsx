@@ -82,7 +82,7 @@ export const Route = createFileRoute('/_web/blogs/$slug')({
               '@type': 'Person',
               name: CONFIG.name,
             },
-            datePublished: loaderData.blog.published,
+            datePublished: loaderData.blog.createdAt,
           }),
         },
       ],

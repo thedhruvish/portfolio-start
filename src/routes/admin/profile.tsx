@@ -25,6 +25,7 @@ const profileSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   headline: z.string(),
   description: z.string().min(1, 'Description is required'),
+  keywords: z.string().optional(),
   image: z.string(),
   resumeLink: z.string(),
   twitter: z.string(),
@@ -41,6 +42,7 @@ function AdminProfile() {
       name: profile?.name || '',
       headline: profile?.headline || '',
       description: profile?.description || '',
+      keywords: profile?.keywords || '',
       image: profile?.image || '',
       resumeLink: profile?.resumeLink || '',
       twitter: profile?.twitter || '',
@@ -127,6 +129,24 @@ function AdminProfile() {
                     className="h-24"
                   />
                   <ShadcnFieldError errors={field.state.meta.errors} />
+                </ShadcnField>
+              )}
+            />
+
+            <form.Field
+              name="keywords"
+              children={(field) => (
+                <ShadcnField className="gap-2">
+                  <ShadcnFieldLabel>
+                    SEO Keywords (comma separated)
+                  </ShadcnFieldLabel>
+                  <Input
+                    name={field.name}
+                    value={field.state.value || ''}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="react, nodejs, backend"
+                  />
                 </ShadcnField>
               )}
             />
