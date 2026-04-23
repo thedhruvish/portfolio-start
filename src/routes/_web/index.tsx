@@ -69,7 +69,6 @@ export const Route = createFileRoute('/_web/')({
       experiences: defer(experiences),
     }
   },
-  ssr: 'data-only',
 })
 
 function RouteComponent() {
