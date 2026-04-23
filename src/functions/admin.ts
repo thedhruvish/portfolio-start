@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
-import { asc, desc, eq, like, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, like, ne, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
 import { blogs, experiences, profile, projects, tags } from '@/db/schema'
@@ -208,6 +208,15 @@ export const createBlogFn = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const { tags: tagList, ...blogData } = data
 
+    // Check for slug uniqueness
+    const existing = await db.query.blogs.findFirst({
+      where: eq(blogs.slug, data.slug),
+    })
+
+    if (existing) {
+      throw new Error(`Slug "${data.slug}" is already in use`)
+    }
+
     const [newBlog] = await db
       .insert(blogs)
       .values(blogData)
@@ -228,23 +237,32 @@ export const createBlogFn = createServerFn({ method: 'POST' })
 export const updateBlogFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => BlogSchema.parse(data))
   .handler(async ({ data }) => {
-    if (!data.id) throw new Error('ID required for update')
-    const { tags: tagList, ...blogData } = data
+    const { id, tags: tagList, ...blogData } = data
+    if (!id) throw new Error('ID required for update')
+
+    // Check for slug uniqueness (excluding current blog)
+    const existing = await db.query.blogs.findFirst({
+      where: and(eq(blogs.slug, data.slug), ne(blogs.id, id)),
+    })
+
+    if (existing) {
+      throw new Error(`Slug "${data.slug}" is already in use`)
+    }
 
     // Update blog
     await db
       .update(blogs)
       .set({ ...blogData, updatedAt: new Date() })
-      .where(eq(blogs.id, data.id))
+      .where(eq(blogs.id, id))
 
     // Update tags: delete all and re-insert
-    await db.delete(tags).where(eq(tags.blogId, data.id))
+    await db.delete(tags).where(eq(tags.blogId, id))
 
     if (tagList.length > 0) {
       await db.insert(tags).values(
         tagList.map((tag) => ({
           tag,
-          blogId: data.id,
+          blogId: id,
         })),
       )
     }
