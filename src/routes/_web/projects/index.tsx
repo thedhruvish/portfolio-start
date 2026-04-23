@@ -123,20 +123,20 @@ function ProjectsPage() {
                 ease: 'easeInOut',
                 delay: index * 0.2,
               }}
-              className="group h-full flex flex-col rounded-xl border bg-card text-card-foreground shadow-lg overflow-hidden"
+              className="group h-full flex flex-col overflow-hidden"
             >
               {/* Project Image */}
               {project.image && (
-                <div className="relative aspect-video w-full overflow-hidden border-b border-border/50">
+                <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="object-cover w-full h-full"
+                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
               )}
 
-              <div className="p-6 flex flex-col grow">
+              <div className="py-6 flex flex-col grow">
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <h3 className="text-xl font-bold text-primary line-clamp-2">
@@ -178,7 +178,7 @@ function ProjectsPage() {
 
                 {/* Tech Stack */}
                 {project.tech && project.tech.length > 0 && (
-                  <div className="mt-6 pt-4 border-t border-border/50">
+                  <div className="mt-4">
                     <TooltipProvider>
                       <div className="flex flex-wrap items-center gap-3">
                         {project.tech.map((techName) => {

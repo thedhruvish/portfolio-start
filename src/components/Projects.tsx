@@ -21,7 +21,7 @@ export const Projects = ({ projects }: { projects: Array<Project> }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.4 }}
         >
-          <article className="group rounded-xl border bg-card/50 p-6 shadow-sm transition-all hover:shadow-md dark:hover:bg-muted/40">
+          <article className="group py-4">
             {/* Title + Links */}
             <div className="flex items-center justify-between gap-4">
               <h3 className="text-xl font-semibold transition-colors group-hover:text-foreground md:text-2xl">
@@ -61,7 +61,7 @@ export const Projects = ({ projects }: { projects: Array<Project> }) => {
 
             {/* Tech Stack (with Tooltips) */}
             {project.tech && project.tech.length > 0 && (
-              <div className="mt-6 pt-4 border-t border-border/50">
+              <div className="mt-4">
                 <TooltipProvider>
                   <div className="flex flex-wrap items-center gap-3">
                     {project.tech.map((techName: string) => {

@@ -24,7 +24,7 @@ export const Experiences = ({
           </div>
 
           {/* Content */}
-          <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border bg-card/50 shadow-sm transition-all hover:shadow-md dark:hover:bg-muted/40 ml-12 md:ml-0">
+          <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] py-4 ml-12 md:ml-0">
             <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-xl font-bold">{exp.company}</h3>

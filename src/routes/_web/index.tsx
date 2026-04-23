@@ -8,6 +8,7 @@ import { HeroSection } from '@/components/Hero-section'
 import { Projects } from '@/components/Projects'
 import { ProjectsSkeleton } from '@/components/ProjectsSkeleton'
 import { Experiences } from '@/components/Experiences'
+import { ExperiencesSkeleton } from '@/components/ExperiencesSkeleton'
 import { getExperiencesFn, getProfileFn } from '@/functions/admin'
 import { getLatestBlogsFn } from '@/functions/blogs'
 import { getPublicProjectsFn } from '@/functions/projects'
@@ -33,7 +34,7 @@ export const Route = createFileRoute('/_web/')({
           name: 'keywords',
           content:
             profile?.keywords ||
-            'Dhruvish Lathiya, Backend Developer, Freelancer, Node.js, PostgreSQL,Nodejs Developer, Ai developer, Drizzle ORM, React, TanStack Start',
+            'Dhruvish Lathiya, Backend Developer, Portfolio, Freelancer, Node.js, PostgreSQL, Drizzle ORM, React, TanStack Start',
         },
         {
           property: 'og:title',
@@ -118,14 +119,7 @@ function RouteComponent() {
           fallback={
             <section className="pt-10 scroll-mt-24">
               <div className="mb-10 h-10 w-48 animate-pulse rounded bg-muted" />
-              <div className="space-y-8">
-                {[1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="h-32 w-full animate-pulse rounded-xl bg-muted"
-                  />
-                ))}
-              </div>
+              <ExperiencesSkeleton />
             </section>
           }
         >

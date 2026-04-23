@@ -1,29 +1,24 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { Card, CardContent } from '@/components/ui/card'
 
 export const BlogsSkeleton = ({ count = 6 }: { count?: number }) => {
   return (
     <>
       {Array.from({ length: count }).map((_, i) => (
-        <li key={i} className="h-full list-none">
-          <Card className="h-full overflow-hidden border-border/50 bg-card/50">
+        <li key={i} className="h-full list-none animate-pulse">
+          <div className="h-full flex flex-col">
             {/* Thumbnail Image Skeleton */}
-            <div className="relative aspect-video w-full overflow-hidden bg-muted">
+            <div className="relative aspect-video w-full overflow-hidden bg-muted rounded-xl">
               <Skeleton className="h-full w-full" />
-              {/* Date Badge Skeleton */}
-              <div className="absolute top-4 right-4">
-                <Skeleton className="h-6 w-24 rounded-full" />
-              </div>
             </div>
 
-            <CardContent className="p-6 space-y-4">
+            <div className="py-4 space-y-4 flex flex-col grow">
               {/* Tags Skeleton */}
               <div className="flex flex-wrap gap-2">
                 <Skeleton className="h-5 w-16 rounded-full" />
                 <Skeleton className="h-5 w-20 rounded-full" />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 grow">
                 {/* Title Skeleton */}
                 <Skeleton className="h-7 w-full" />
                 <Skeleton className="h-7 w-3/4" />
@@ -38,10 +33,10 @@ export const BlogsSkeleton = ({ count = 6 }: { count?: number }) => {
 
               {/* Read More Link Skeleton */}
               <div className="pt-2 flex items-center">
-                <Skeleton className="h-5 w-24" />
+                <Skeleton className="h-5 w-28" />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </li>
       ))}
     </>
