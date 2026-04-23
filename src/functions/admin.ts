@@ -2,7 +2,45 @@ import { createServerFn } from '@tanstack/react-start'
 import { desc, eq, like, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '@/db'
-import { blogs, profile, projects, tags } from '@/db/schema'
+import { blogs, experiences, profile, projects, tags } from '@/db/schema'
+
+export const ExperienceSchema = z.object({
+  id: z.number().optional(),
+  company: z.string().min(1),
+  position: z.string().min(1),
+  description: z.string().min(1),
+  duration: z.string().optional(),
+})
+
+export const getExperiencesFn = createServerFn({ method: 'GET' }).handler(
+  async () => {
+    return await db.select().from(experiences).orderBy(desc(experiences.id))
+  },
+)
+
+export const createExperienceFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) =>
+    ExperienceSchema.omit({ id: true }).parse(data),
+  )
+  .handler(async ({ data }) => {
+    await db.insert(experiences).values(data)
+    return { success: true }
+  })
+
+export const updateExperienceFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: unknown) => ExperienceSchema.parse(data))
+  .handler(async ({ data }) => {
+    if (!data.id) throw new Error('ID required for update')
+    await db.update(experiences).set(data).where(eq(experiences.id, data.id))
+    return { success: true }
+  })
+
+export const deleteExperienceFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: number) => z.number().parse(data))
+  .handler(async ({ data: id }) => {
+    await db.delete(experiences).where(eq(experiences.id, id))
+    return { success: true }
+  })
 
 const ProfileSchema = z.object({
   name: z.string().min(1),

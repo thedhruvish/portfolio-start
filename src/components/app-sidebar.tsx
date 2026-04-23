@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import {
+  Briefcase,
   Command,
   FolderGit2,
   LayoutDashboard,
@@ -41,6 +42,11 @@ export const navItems = [
     title: 'Projects',
     url: '/admin/projects',
     icon: FolderGit2,
+  },
+  {
+    title: 'Experiences',
+    url: '/admin/experiences',
+    icon: Briefcase,
   },
   {
     title: 'Blogs',

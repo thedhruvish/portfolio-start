@@ -20,6 +20,7 @@ import { Route as WebIndexRouteImport } from './routes/_web/index'
 import { Route as AdminSubscribersRouteImport } from './routes/admin/subscribers'
 import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
+import { Route as AdminExperiencesRouteImport } from './routes/admin/experiences'
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
 import { Route as AdminContactsIndexRouteImport } from './routes/admin/contacts/index'
 import { Route as AdminBlogsIndexRouteImport } from './routes/admin/blogs/index'
@@ -85,6 +86,11 @@ const AdminProfileRoute = AdminProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminExperiencesRoute = AdminExperiencesRouteImport.update({
+  id: '/experiences',
+  path: '/experiences',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const WebContactUsRoute = WebContactUsRouteImport.update({
   id: '/contact-us',
   path: '/contact-us',
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/contact-us': typeof WebContactUsRoute
+  '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/contact-us': typeof WebContactUsRoute
+  '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_web/contact-us': typeof WebContactUsRoute
+  '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/projects': typeof AdminProjectsRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/sitemap.xml'
     | '/contact-us'
+    | '/admin/experiences'
     | '/admin/profile'
     | '/admin/projects'
     | '/admin/subscribers'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/sitemap.xml'
     | '/contact-us'
+    | '/admin/experiences'
     | '/admin/profile'
     | '/admin/projects'
     | '/admin/subscribers'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/rss.xml'
     | '/sitemap.xml'
     | '/_web/contact-us'
+    | '/admin/experiences'
     | '/admin/profile'
     | '/admin/projects'
     | '/admin/subscribers'
@@ -360,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProfileRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/experiences': {
+      id: '/admin/experiences'
+      path: '/experiences'
+      fullPath: '/admin/experiences'
+      preLoaderRoute: typeof AdminExperiencesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_web/contact-us': {
       id: '/_web/contact-us'
       path: '/contact-us'
@@ -456,6 +475,7 @@ const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(
 )
 
 interface AdminRouteRouteChildren {
+  AdminExperiencesRoute: typeof AdminExperiencesRoute
   AdminProfileRoute: typeof AdminProfileRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
@@ -468,6 +488,7 @@ interface AdminRouteRouteChildren {
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminExperiencesRoute: AdminExperiencesRoute,
   AdminProfileRoute: AdminProfileRoute,
   AdminProjectsRoute: AdminProjectsRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,

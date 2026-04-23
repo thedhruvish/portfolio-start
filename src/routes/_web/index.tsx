@@ -7,7 +7,8 @@ import Github from '@/components/Github'
 import { HeroSection } from '@/components/Hero-section'
 import { Projects } from '@/components/Projects'
 import { ProjectsSkeleton } from '@/components/ProjectsSkeleton'
-import { getProfileFn } from '@/functions/admin'
+import { Experiences } from '@/components/Experiences'
+import { getExperiencesFn, getProfileFn } from '@/functions/admin'
 import { getLatestBlogsFn } from '@/functions/blogs'
 import { getPublicProjectsFn } from '@/functions/projects'
 import { CONFIG } from '@/config/config'
@@ -60,22 +61,58 @@ export const Route = createFileRoute('/_web/')({
     const profile = await getProfileFn()
     const latestBlogs = getLatestBlogsFn()
     const projects = getPublicProjectsFn()
+    const experiences = getExperiencesFn()
     return {
       profile,
       latestBlogs: defer(latestBlogs),
       projects: defer(projects),
+      experiences: defer(experiences),
     }
   },
   ssr: 'data-only',
 })
 
 function RouteComponent() {
-  const { profile, latestBlogs, projects } = Route.useLoaderData()
+  const { profile, latestBlogs, projects, experiences } = Route.useLoaderData()
 
   return (
     <>
       <Container>
         <HeroSection profile={profile} />
+
+        {/* Experiences Section */}
+        <Suspense
+          fallback={
+            <section className="pt-10 scroll-mt-24">
+              <div className="mb-10 h-10 w-48 animate-pulse rounded bg-muted" />
+              <div className="space-y-8">
+                {[1, 2].map((i) => (
+                  <div
+                    key={i}
+                    className="h-32 w-full animate-pulse rounded-xl bg-muted"
+                  />
+                ))}
+              </div>
+            </section>
+          }
+        >
+          <Await promise={experiences}>
+            {(data) => {
+              if (!data || data.length === 0) return null
+              return (
+                <section id="experience" className="pt-10 scroll-mt-24">
+                  <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+                    <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                      Experience
+                    </h2>
+                  </div>
+                  <Experiences experiences={data} />
+                </section>
+              )
+            }}
+          </Await>
+        </Suspense>
+
         <section id="projects" className="pt-10 scroll-mt-24">
           {/* Section Header */}
           <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
