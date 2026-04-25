@@ -22,6 +22,7 @@ import { Route as AdminProjectsRouteImport } from './routes/admin/projects'
 import { Route as AdminProfileRouteImport } from './routes/admin/profile'
 import { Route as AdminExperiencesRouteImport } from './routes/admin/experiences'
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
+import { Route as WebContactRouteImport } from './routes/_web/contact'
 import { Route as AdminContactsIndexRouteImport } from './routes/admin/contacts/index'
 import { Route as AdminBlogsIndexRouteImport } from './routes/admin/blogs/index'
 import { Route as WebTagsIndexRouteImport } from './routes/_web/tags/index'
@@ -98,6 +99,11 @@ const WebContactUsRoute = WebContactUsRouteImport.update({
   path: '/contact-us',
   getParentRoute: () => WebRouteRoute,
 } as any)
+const WebContactRoute = WebContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => WebRouteRoute,
+} as any)
 const AdminContactsIndexRoute = AdminContactsIndexRouteImport.update({
   id: '/contacts/',
   path: '/contacts/',
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/contact': typeof WebContactRoute
   '/contact-us': typeof WebContactUsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/contact': typeof WebContactRoute
   '/contact-us': typeof WebContactUsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_web/contact': typeof WebContactRoute
   '/_web/contact-us': typeof WebContactUsRoute
   '/admin/experiences': typeof AdminExperiencesRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rss.xml'
     | '/sitemap.xml'
+    | '/contact'
     | '/contact-us'
     | '/admin/experiences'
     | '/admin/profile'
@@ -261,6 +271,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rss.xml'
     | '/sitemap.xml'
+    | '/contact'
     | '/contact-us'
     | '/admin/experiences'
     | '/admin/profile'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rss.xml'
     | '/sitemap.xml'
+    | '/_web/contact'
     | '/_web/contact-us'
     | '/admin/experiences'
     | '/admin/profile'
@@ -410,6 +422,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebContactUsRouteImport
       parentRoute: typeof WebRouteRoute
     }
+    '/_web/contact': {
+      id: '/_web/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof WebContactRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
     '/admin/contacts/': {
       id: '/admin/contacts/'
       path: '/contacts'
@@ -491,6 +510,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface WebRouteRouteChildren {
+  WebContactRoute: typeof WebContactRoute
   WebContactUsRoute: typeof WebContactUsRoute
   WebIndexRoute: typeof WebIndexRoute
   WebBlogsSlugRoute: typeof WebBlogsSlugRoute
@@ -502,6 +522,7 @@ interface WebRouteRouteChildren {
 }
 
 const WebRouteRouteChildren: WebRouteRouteChildren = {
+  WebContactRoute: WebContactRoute,
   WebContactUsRoute: WebContactUsRoute,
   WebIndexRoute: WebIndexRoute,
   WebBlogsSlugRoute: WebBlogsSlugRoute,
