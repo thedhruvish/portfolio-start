@@ -158,11 +158,13 @@ function BlogDetailComponent() {
       </div>
       {/* Hero Section */}
       <div className="space-y-6 text-center">
-        <div className="flex items-center justify-center gap-2">
-          {blog.tags.map((tag: any) => (
-            <Badge key={tag} variant="secondary">
-              {tag}
-            </Badge>
+        <div className="flex items-center justify-center gap-2 flex-wrap">
+          {blog.tags.map((tag: string) => (
+            <Link key={tag} to="/tags/$name" params={{ name: tag }}>
+              <Badge variant="secondary" className="hover:bg-secondary/80 cursor-pointer">
+                {tag}
+              </Badge>
+            </Link>
           ))}
         </div>
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-6xl text-balance">

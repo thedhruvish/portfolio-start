@@ -24,9 +24,11 @@ import { Route as AdminExperiencesRouteImport } from './routes/admin/experiences
 import { Route as WebContactUsRouteImport } from './routes/_web/contact-us'
 import { Route as AdminContactsIndexRouteImport } from './routes/admin/contacts/index'
 import { Route as AdminBlogsIndexRouteImport } from './routes/admin/blogs/index'
+import { Route as WebTagsIndexRouteImport } from './routes/_web/tags/index'
 import { Route as WebProjectsIndexRouteImport } from './routes/_web/projects/index'
 import { Route as WebBlogsIndexRouteImport } from './routes/_web/blogs/index'
 import { Route as AdminBlogsNewRouteImport } from './routes/admin/blogs/new'
+import { Route as WebTagsNameRouteImport } from './routes/_web/tags/$name'
 import { Route as WebProjectsSlugRouteImport } from './routes/_web/projects/$slug'
 import { Route as WebBlogsSlugRouteImport } from './routes/_web/blogs/$slug'
 import { Route as AdminBlogsIdIndexRouteImport } from './routes/admin/blogs/$id/index'
@@ -106,6 +108,11 @@ const AdminBlogsIndexRoute = AdminBlogsIndexRouteImport.update({
   path: '/blogs/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const WebTagsIndexRoute = WebTagsIndexRouteImport.update({
+  id: '/tags/',
+  path: '/tags/',
+  getParentRoute: () => WebRouteRoute,
+} as any)
 const WebProjectsIndexRoute = WebProjectsIndexRouteImport.update({
   id: '/projects/',
   path: '/projects/',
@@ -120,6 +127,11 @@ const AdminBlogsNewRoute = AdminBlogsNewRouteImport.update({
   id: '/blogs/new',
   path: '/blogs/new',
   getParentRoute: () => AdminRouteRoute,
+} as any)
+const WebTagsNameRoute = WebTagsNameRouteImport.update({
+  id: '/tags/$name',
+  path: '/tags/$name',
+  getParentRoute: () => WebRouteRoute,
 } as any)
 const WebProjectsSlugRoute = WebProjectsSlugRouteImport.update({
   id: '/projects/$slug',
@@ -157,9 +169,11 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/blogs/$slug': typeof WebBlogsSlugRoute
   '/projects/$slug': typeof WebProjectsSlugRoute
+  '/tags/$name': typeof WebTagsNameRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/blogs/': typeof WebBlogsIndexRoute
   '/projects/': typeof WebProjectsIndexRoute
+  '/tags/': typeof WebTagsIndexRoute
   '/admin/blogs/': typeof AdminBlogsIndexRoute
   '/admin/contacts/': typeof AdminContactsIndexRoute
   '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
@@ -179,9 +193,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/blogs/$slug': typeof WebBlogsSlugRoute
   '/projects/$slug': typeof WebProjectsSlugRoute
+  '/tags/$name': typeof WebTagsNameRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/blogs': typeof WebBlogsIndexRoute
   '/projects': typeof WebProjectsIndexRoute
+  '/tags': typeof WebTagsIndexRoute
   '/admin/blogs': typeof AdminBlogsIndexRoute
   '/admin/contacts': typeof AdminContactsIndexRoute
   '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
@@ -204,9 +220,11 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/_web/blogs/$slug': typeof WebBlogsSlugRoute
   '/_web/projects/$slug': typeof WebProjectsSlugRoute
+  '/_web/tags/$name': typeof WebTagsNameRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
   '/_web/blogs/': typeof WebBlogsIndexRoute
   '/_web/projects/': typeof WebProjectsIndexRoute
+  '/_web/tags/': typeof WebTagsIndexRoute
   '/admin/blogs/': typeof AdminBlogsIndexRoute
   '/admin/contacts/': typeof AdminContactsIndexRoute
   '/admin/blogs/$id/edit': typeof AdminBlogsIdEditRoute
@@ -229,9 +247,11 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/blogs/$slug'
     | '/projects/$slug'
+    | '/tags/$name'
     | '/admin/blogs/new'
     | '/blogs/'
     | '/projects/'
+    | '/tags/'
     | '/admin/blogs/'
     | '/admin/contacts/'
     | '/admin/blogs/$id/edit'
@@ -251,9 +271,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blogs/$slug'
     | '/projects/$slug'
+    | '/tags/$name'
     | '/admin/blogs/new'
     | '/blogs'
     | '/projects'
+    | '/tags'
     | '/admin/blogs'
     | '/admin/contacts'
     | '/admin/blogs/$id/edit'
@@ -275,9 +297,11 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/_web/blogs/$slug'
     | '/_web/projects/$slug'
+    | '/_web/tags/$name'
     | '/admin/blogs/new'
     | '/_web/blogs/'
     | '/_web/projects/'
+    | '/_web/tags/'
     | '/admin/blogs/'
     | '/admin/contacts/'
     | '/admin/blogs/$id/edit'
@@ -400,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogsIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/_web/tags/': {
+      id: '/_web/tags/'
+      path: '/tags'
+      fullPath: '/tags/'
+      preLoaderRoute: typeof WebTagsIndexRouteImport
+      parentRoute: typeof WebRouteRoute
+    }
     '/_web/projects/': {
       id: '/_web/projects/'
       path: '/projects'
@@ -420,6 +451,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/blogs/new'
       preLoaderRoute: typeof AdminBlogsNewRouteImport
       parentRoute: typeof AdminRouteRoute
+    }
+    '/_web/tags/$name': {
+      id: '/_web/tags/$name'
+      path: '/tags/$name'
+      fullPath: '/tags/$name'
+      preLoaderRoute: typeof WebTagsNameRouteImport
+      parentRoute: typeof WebRouteRoute
     }
     '/_web/projects/$slug': {
       id: '/_web/projects/$slug'
@@ -457,8 +495,10 @@ interface WebRouteRouteChildren {
   WebIndexRoute: typeof WebIndexRoute
   WebBlogsSlugRoute: typeof WebBlogsSlugRoute
   WebProjectsSlugRoute: typeof WebProjectsSlugRoute
+  WebTagsNameRoute: typeof WebTagsNameRoute
   WebBlogsIndexRoute: typeof WebBlogsIndexRoute
   WebProjectsIndexRoute: typeof WebProjectsIndexRoute
+  WebTagsIndexRoute: typeof WebTagsIndexRoute
 }
 
 const WebRouteRouteChildren: WebRouteRouteChildren = {
@@ -466,8 +506,10 @@ const WebRouteRouteChildren: WebRouteRouteChildren = {
   WebIndexRoute: WebIndexRoute,
   WebBlogsSlugRoute: WebBlogsSlugRoute,
   WebProjectsSlugRoute: WebProjectsSlugRoute,
+  WebTagsNameRoute: WebTagsNameRoute,
   WebBlogsIndexRoute: WebBlogsIndexRoute,
   WebProjectsIndexRoute: WebProjectsIndexRoute,
+  WebTagsIndexRoute: WebTagsIndexRoute,
 }
 
 const WebRouteRouteWithChildren = WebRouteRoute._addFileChildren(

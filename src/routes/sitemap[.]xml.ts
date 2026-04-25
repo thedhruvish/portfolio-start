@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getPublicBlogsFn } from '@/functions/blogs'
+import { getPublicBlogsFn, getPublicTagsFn } from '@/functions/blogs'
 import { getUrlDetails } from '@/lib/seo-utils'
 
 export const Route = createFileRoute('/sitemap.xml')({
@@ -7,14 +7,16 @@ export const Route = createFileRoute('/sitemap.xml')({
     handlers: {
       GET: async () => {
         const blogsData = await getPublicBlogsFn({ data: { pageSize: 1000 } })
+        const tagsData = await getPublicTagsFn()
 
         const baseUrl = 'https://dhruvish.in'
 
-        const staticRoutes = ['', '/contact-us', '/blogs', '/projects']
+        const staticRoutes = ['', '/contact-us', '/blogs', '/projects', '/tags']
 
         const blogUrls = blogsData.data.map((b) => `/blogs/${b.slug}`)
+        const tagUrls = tagsData.map((tag) => `/tags/${tag}`)
 
-        const urls = [...staticRoutes, ...blogUrls]
+        const urls = [...staticRoutes, ...blogUrls, ...tagUrls]
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

@@ -37,41 +37,53 @@ export const BlogCard = ({ blog, className, index = 0 }: BlogCardProps) => {
         }}
         className="h-full"
       >
-        <Link
-          to="/blogs/$slug"
-          params={{ slug: blog.slug }}
-          className="group block h-full overflow-hidden rounded-xl transition-all duration-300"
-        >
-          {/* Thumbnail Image */}
-          <div className="relative aspect-video w-full overflow-hidden bg-muted rounded-xl">
-            {blog.thumbImage ? (
-              <img
-                src={blog.thumbImage}
-                alt={blog.title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-secondary text-secondary-foreground">
-                <span className="text-4xl font-bold opacity-20">Blog</span>
-              </div>
-            )}
-          </div>
+        <div className="group block h-full overflow-hidden rounded-xl transition-all duration-300">
+          <Link
+            to="/blogs/$slug"
+            params={{ slug: blog.slug }}
+            className="block"
+          >
+            {/* Thumbnail Image */}
+            <div className="relative aspect-video w-full overflow-hidden bg-muted rounded-xl">
+              {blog.thumbImage ? (
+                <img
+                  src={blog.thumbImage}
+                  alt={blog.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-secondary text-secondary-foreground">
+                  <span className="text-4xl font-bold opacity-20">Blog</span>
+                </div>
+              )}
+            </div>
+          </Link>
 
           <div className="py-4 space-y-4">
             {/* Tags */}
             <div className="flex flex-wrap gap-2">
               {blog.tags.map((tag) => (
-                <Badge
+                <Link
                   key={tag}
-                  variant="outline"
-                  className="text-xs font-normal border-primary/20 text-primary hover:bg-primary/10 transition-colors"
+                  to="/tags/$name"
+                  params={{ name: tag }}
+                  className="z-10"
                 >
-                  #{tag}
-                </Badge>
+                  <Badge
+                    variant="outline"
+                    className="text-xs font-normal border-primary/20 text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                  >
+                    #{tag}
+                  </Badge>
+                </Link>
               ))}
             </div>
 
-            <div className="space-y-2">
+            <Link
+              to="/blogs/$slug"
+              params={{ slug: blog.slug }}
+              className="block space-y-2"
+            >
               {/* Title */}
               <h3 className="line-clamp-2 text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
                 {blog.title}
@@ -83,15 +95,15 @@ export const BlogCard = ({ blog, className, index = 0 }: BlogCardProps) => {
                   {blog.description}
                 </p>
               )}
-            </div>
 
-            {/* Read More Link */}
-            <div className="pt-2 flex items-center text-sm font-medium text-primary">
-              Read Article
-              <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </div>
+              {/* Read More Link */}
+              <div className="pt-2 flex items-center text-sm font-medium text-primary">
+                Read Article
+                <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
           </div>
-        </Link>
+        </div>
       </motion.div>
     </motion.li>
   )
