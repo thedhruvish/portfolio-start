@@ -104,6 +104,11 @@ export const getPublicBlogBySlugFn = createServerFn({ method: 'GET' })
       .from(tags)
       .where(eq(tags.blogId, blog.id))
 
+    // Calculate reading time
+    const contentText = JSON.stringify(blog.content || '')
+    const wordCount = contentText.split(/\s+/).length
+    const readingTime = Math.ceil(wordCount / 200)
+
     // Fetch Suggestions
     const suggestionsResult = await db
       .select({
@@ -153,6 +158,7 @@ export const getPublicBlogBySlugFn = createServerFn({ method: 'GET' })
       content: blog.content as any,
       likes: blog.likes || 0,
       tags: blogTagsFormatted.map((t) => t.tag),
+      readingTime,
       suggestions,
     }
   })

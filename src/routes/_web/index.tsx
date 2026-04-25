@@ -1,5 +1,5 @@
 import { Await, Link, createFileRoute, defer } from '@tanstack/react-router'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { BlogCard } from '@/components/BlogCard'
 import { BlogsSkeleton } from '@/components/BlogsSkeleton'
 import Container from '@/components/Container'
@@ -9,6 +9,7 @@ import { Projects } from '@/components/Projects'
 import { ProjectsSkeleton } from '@/components/ProjectsSkeleton'
 import { Experiences } from '@/components/Experiences'
 import { ExperiencesSkeleton } from '@/components/ExperiencesSkeleton'
+import { Button } from '@/components/ui/button'
 import { getExperiencesFn, getProfileFn } from '@/functions/admin'
 import { getLatestBlogsFn } from '@/functions/blogs'
 import { getPublicProjectsFn } from '@/functions/projects'
@@ -108,6 +109,7 @@ export const Route = createFileRoute('/_web/')({
 
 function RouteComponent() {
   const { profile, latestBlogs, projects, experiences } = Route.useLoaderData()
+  const [selectedTech, setSelectedTech] = useState<string | null>(null)
 
   return (
     <>
@@ -143,9 +145,22 @@ function RouteComponent() {
         <section id="projects" className="pt-10 scroll-mt-24">
           {/* Section Header */}
           <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-            <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
-              Projects
-            </h2>
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                Projects
+              </h2>
+              {selectedTech && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Showing projects built with <span className="font-bold text-primary">{selectedTech}</span>
+                  <button 
+                    onClick={() => setSelectedTech(null)}
+                    className="ml-2 underline hover:text-foreground"
+                  >
+                    clear
+                  </button>
+                </p>
+              )}
+            </div>
 
             <Link
               to="/projects"
@@ -162,9 +177,35 @@ function RouteComponent() {
             }
           >
             <Await promise={projects}>
-              {(data) => <Projects projects={data} />}
-            </Await>
-          </Suspense>
+                {(data) => {
+                  const filtered = selectedTech 
+                    ? data.filter(p => p.tech?.includes(selectedTech))
+                    : data
+
+                  const displayProjects = filtered.slice(0, 3)
+                  const hasMore = filtered.length > 3
+
+                  return (
+                    <div className="space-y-10">
+                      <Projects 
+                        projects={displayProjects} 
+                        selectedTech={selectedTech}
+                        onTechSelect={setSelectedTech}
+                      />
+
+                      {hasMore && (
+                        <div className="flex justify-center pt-4">
+                          <Button variant="outline" asChild className="rounded-full px-8">
+                            <Link to="/projects">
+                              Show more projects
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )
+                }}
+              </Await>          </Suspense>
         </section>
 
         {/* Latest Blogs Section */}
@@ -177,7 +218,7 @@ function RouteComponent() {
               to="/blogs"
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
-              View all Blgos →
+              View all Blogs →
             </Link>
           </div>
 

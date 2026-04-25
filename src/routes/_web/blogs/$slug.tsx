@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, createFileRoute, notFound } from '@tanstack/react-router'
-import { Calendar, ChevronLeft } from 'lucide-react'
+import { Calendar, ChevronLeft, Clock } from 'lucide-react'
 import dayjs from 'dayjs'
+import { motion, useScroll, useSpring } from 'motion/react'
 import { BlockEditor } from '@/components/block-editor/lazy'
 import { BlogCard } from '@/components/BlogCard'
 import { BlogDetailSkeleton } from '@/components/BlogDetailSkeleton'
@@ -13,6 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CONFIG } from '@/config/config'
 import { getPublicBlogBySlugFn } from '@/functions/blogs'
+import { BlogShare } from '@/components/BlogShare'
 
 export const Route = createFileRoute('/_web/blogs/$slug')({
   loader: async ({ params: { slug } }) => {
@@ -107,13 +109,26 @@ function BlogDetailComponent() {
   const [likes, setLikes] = useState(blog.likes || 0)
   const [isLiked, setIsLiked] = useState(false)
 
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  })
+
   const handleLike = () => {
     setLikes((prev: number) => prev + 1)
     setIsLiked(true)
   }
 
+  const blogUrl = `${CONFIG.siteUrl}/blogs/${blog.slug}`
+
   return (
     <Container key={blog.id} className="py-10 max-w-4xl space-y-8 relative">
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-[100] origin-left"
+        style={{ scaleX }}
+      />
       <div className="hidden lg:block">
         <div className="absolute top-10 -left-20">
           <Button
@@ -171,11 +186,19 @@ function BlogDetailComponent() {
           {blog.title}
         </h1>
         {blog.createdAt && (
-          <div className="flex items-center justify-center text-muted-foreground text-sm gap-2">
-            <Calendar className="w-4 h-4" />
-            <span>
-              Published {dayjs(blog.createdAt).format('MMMM D, YYYY')}
-            </span>
+          <div className="flex items-center justify-center text-muted-foreground text-sm gap-4">
+            <div className="flex items-center gap-1">
+              <Calendar className="w-4 h-4" />
+              <span>
+                {dayjs(blog.createdAt).format('MMMM D, YYYY')}
+              </span>
+            </div>
+            {blog.readingTime && (
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                <span>{blog.readingTime} min read</span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -197,18 +220,23 @@ function BlogDetailComponent() {
       </div>
       <hr className="border-border/50" />
 
-      {/* Like Section */}
-      <div className="flex flex-col items-center justify-center gap-4 py-8">
-        <p className="text-muted-foreground font-medium">
-          Enjoyed this post? Give it some love!
-        </p>
-        <BlogLikeButton
-          blogId={blog.id}
-          likes={likes}
-          isLiked={isLiked}
-          onLike={handleLike}
-        />
+      {/* Share Section */}
+      <div className="flex flex-col items-center justify-center py-4">
+        <BlogShare title={blog.title} url={blogUrl} />
+        
+        <div className="flex flex-col items-center gap-4 mt-6">
+          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+            Enjoyed this post? Give it some love!
+          </p>
+          <BlogLikeButton
+            blogId={blog.id}
+            likes={likes}
+            isLiked={isLiked}
+            onLike={handleLike}
+          />
+        </div>
       </div>
+      
       <hr className="border-border/50" />
       {/* Suggested Blogs */}
       {blog.suggestions.length > 0 && (

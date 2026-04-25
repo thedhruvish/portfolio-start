@@ -10,86 +10,120 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { TechIconsMap } from '@/config/tech-icons-map'
+import { cn } from '@/lib/utils'
 
-export const Projects = ({ projects }: { projects: Array<Project> }) => {
+interface ProjectsProps {
+  projects: Array<Project>
+  selectedTech?: string | null
+  onTechSelect?: (tech: string | null) => void
+}
+
+export const Projects = ({ projects, selectedTech, onTechSelect }: ProjectsProps) => {
   return (
-    <ul className="flex flex-col gap-8">
+    <ul className="flex flex-col gap-12">
       {projects.map((project, index) => (
         <motion.li
-          key={project.title}
+          key={project.id}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1, duration: 0.4 }}
         >
-          <article className="group py-4">
-            {/* Title + Links */}
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-xl font-semibold transition-colors group-hover:text-foreground md:text-2xl">
-                {project.title}
-              </h3>
+          <article className="group flex flex-col md:flex-row gap-8 items-start">
+            {/* Content Side */}
+            <div className="flex-1 order-2 md:order-1 space-y-4">
+              {/* Title + Links */}
+              <div className="flex items-center justify-between gap-4">
+                <h3 className="text-xl font-bold transition-colors group-hover:text-primary md:text-2xl">
+                  {project.title}
+                </h3>
 
-              <div className="flex items-center gap-3">
-                {project.github && (
-                  <a
-                    href={project.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                    aria-label="GitHub Repository"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                )}
-                {project.link && (
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                    aria-label="Live Project"
-                  >
-                    <ExternalLink className="h-5 w-5" />
-                  </a>
-                )}
+                <div className="flex items-center gap-3">
+                  {project.github && (
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground transition-colors hover:text-foreground p-2 hover:bg-muted rounded-full"
+                      aria-label="GitHub Repository"
+                    >
+                      <Github className="h-5 w-5" />
+                    </a>
+                  )}
+                  {project.link && (
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground transition-colors hover:text-foreground p-2 hover:bg-muted rounded-full"
+                      aria-label="Live Project"
+                    >
+                      <ExternalLink className="h-5 w-5" />
+                    </a>
+                  )}
+                </div>
               </div>
+
+              {/* Description */}
+              <p className="text-base text-muted-foreground leading-relaxed">
+                {project.description}
+              </p>
+
+              {/* Tech Stack (with Tooltips) */}
+              {project.tech && project.tech.length > 0 && (
+                <div className="pt-2">
+                  <TooltipProvider>
+                    <div className="flex flex-wrap items-center gap-3">
+                      {project.tech.map((techName: string) => {
+                        const Icon = TechIconsMap[techName]
+                        const isSelected = selectedTech === techName
+                        return (
+                          <Tooltip key={techName}>
+                            <TooltipTrigger asChild>
+                              <div 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onTechSelect?.(isSelected ? null : techName)
+                                }}
+                                className={cn(
+                                  "size-5 cursor-pointer text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300",
+                                  isSelected && "text-primary scale-110"
+                                )}
+                              >
+                                {Icon ? (
+                                  <Icon />
+                                ) : (
+                                  <Badge
+                                    variant={isSelected ? "default" : "secondary"}
+                                    className="text-[10px] px-1 py-0 h-5"
+                                  >
+                                    {techName}
+                                  </Badge>
+                                )}
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">{techName}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )
+                      })}
+                    </div>
+                  </TooltipProvider>
+                </div>
+              )}
             </div>
 
-            {/* Description */}
-            <p className="mt-4 text-base text-muted-foreground">
-              {project.description}
-            </p>
-
-            {/* Tech Stack (with Tooltips) */}
-            {project.tech && project.tech.length > 0 && (
-              <div className="mt-4">
-                <TooltipProvider>
-                  <div className="flex flex-wrap items-center gap-3">
-                    {project.tech.map((techName: string) => {
-                      const Icon = TechIconsMap[techName]
-                      return (
-                        <Tooltip key={techName}>
-                          <TooltipTrigger asChild>
-                            <div className="size-5 cursor-default text-muted-foreground hover:text-foreground hover:scale-110 transition-all duration-300">
-                              {Icon ? (
-                                <Icon />
-                              ) : (
-                                <Badge
-                                  variant="secondary"
-                                  className="text-[10px] px-1 py-0 h-5"
-                                >
-                                  {techName}
-                                </Badge>
-                              )}
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs">{techName}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )
-                    })}
-                  </div>
-                </TooltipProvider>
+            {/* Image Side */}
+            {project.image && (
+              <div className="w-full md:w-2/5 order-1 md:order-2 shrink-0">
+                <div className="relative aspect-video overflow-hidden rounded-xl border border-border/50 bg-muted group-hover:border-primary/50 transition-colors shadow-sm">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
               </div>
             )}
           </article>

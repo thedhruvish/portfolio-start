@@ -5,6 +5,7 @@ import GithubIcon from './svgs/Github'
 import { Button } from './ui/button'
 import { githubConfig } from '@/config/Github'
 import { useTheme } from '@/provider/theme-provider'
+import { GithubStats } from './GithubStats'
 
 const ActivityCalendar = lazy(() =>
   import('react-activity-calendar').then((mod) => ({
@@ -141,6 +142,8 @@ export default function Github() {
             )}
           </div>
         </div>
+
+        <GithubStats />
 
         {/* Content */}
         {isLoading ? (
