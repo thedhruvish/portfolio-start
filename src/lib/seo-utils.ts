@@ -7,12 +7,14 @@ export const getUrlDetails = (url: string) => {
     return { priority: '0.9', changefreq: 'weekly' }
   } else if (url === '/projects') {
     return { priority: '0.9', changefreq: 'monthly' }
-  } else if (url === '/tag') {
+  } else if (url.startsWith('/projects')) {
     return { priority: '0.9', changefreq: 'monthly' }
+  } else if (url === '/tag') {
+    return { priority: '0.9', changefreq: 'weekly' }
   } else if (url.startsWith('/blogs/')) {
-    return { priority: '0.8', changefreq: 'yearly' }
+    return { priority: '0.8', changefreq: 'weekly' }
   } else if (url.startsWith('/tags/')) {
-    return { priority: '0.7', changefreq: 'yearly' }
+    return { priority: '0.7', changefreq: 'weekly' }
   }
   return { priority: '0.7', changefreq: 'daily' }
 }

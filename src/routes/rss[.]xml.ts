@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { getPublicBlogsFn } from '@/functions/blogs'
+import { getPublicProjectsFn } from '@/functions/projects'
 import { CONFIG } from '@/config/config'
 
 export const Route = createFileRoute('/rss.xml')({
@@ -7,6 +8,7 @@ export const Route = createFileRoute('/rss.xml')({
     handlers: {
       GET: async () => {
         const blogsData = await getPublicBlogsFn({ data: { pageSize: 1000 } })
+        const projectsData = await getPublicProjectsFn()
 
         const baseUrl = 'https://dhruvish.in'
 
@@ -22,11 +24,23 @@ export const Route = createFileRoute('/rss.xml')({
       .map((blog) => {
         return `
     <item>
-      <title><![CDATA[${blog.title}]]></title>
+      <title><![CDATA[${blog.title} (Blog)]]></title>
       <link>${baseUrl}/blogs/${blog.slug}</link>
       <description><![CDATA[${blog.description || ''}]]></description>
       <pubDate>${new Date(blog.createdAt ?? new Date()).toUTCString()}</pubDate>
       <guid>${baseUrl}/blogs/${blog.slug}</guid>
+    </item>`
+      })
+      .join('')}
+    ${projectsData
+      .map((project) => {
+        return `
+    <item>
+      <title><![CDATA[${project.title} (Project)]]></title>
+      <link>${baseUrl}/projects/${project.slug}</link>
+      <description><![CDATA[${project.description || ''}]]></description>
+      <pubDate>${new Date().toUTCString()}</pubDate>
+      <guid>${baseUrl}/projects/${project.slug}</guid>
     </item>`
       })
       .join('')}

@@ -1,5 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { Link } from '@tanstack/react-router'
 import Github from './svgs/Github'
 import { Badge } from './ui/badge'
 import type { Project } from '@/db/schema/projects'
@@ -33,9 +34,15 @@ export const Projects = ({ projects, selectedTech, onTechSelect }: ProjectsProps
             <div className="flex-1 order-2 md:order-1 space-y-4">
               {/* Title + Links */}
               <div className="flex items-center justify-between gap-4">
-                <h3 className="text-xl font-bold transition-colors group-hover:text-primary md:text-2xl">
-                  {project.title}
-                </h3>
+                <Link 
+                  to="/projects/$slug" 
+                  params={{ slug: project.slug }}
+                  className="group/title"
+                >
+                  <h3 className="text-xl font-bold transition-colors group-hover:text-primary group-hover/title:text-primary md:text-2xl">
+                    {project.title}
+                  </h3>
+                </Link>
 
                 <div className="flex items-center gap-3">
                   {project.github && (
@@ -115,7 +122,11 @@ export const Projects = ({ projects, selectedTech, onTechSelect }: ProjectsProps
 
             {/* Image Side */}
             {project.image && (
-              <div className="w-full md:w-2/5 order-1 md:order-2 shrink-0">
+              <Link 
+                to="/projects/$slug" 
+                params={{ slug: project.slug }}
+                className="w-full md:w-2/5 order-1 md:order-2 shrink-0"
+              >
                 <div className="relative aspect-video overflow-hidden rounded-xl border border-border/50 bg-muted group-hover:border-primary/50 transition-colors shadow-sm">
                   <img
                     src={project.image}
@@ -124,7 +135,7 @@ export const Projects = ({ projects, selectedTech, onTechSelect }: ProjectsProps
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-              </div>
+              </Link>
             )}
           </article>
         </motion.li>

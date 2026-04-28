@@ -5,7 +5,11 @@ import { Card, CardContent } from './ui/card'
 import { motion } from 'framer-motion'
 
 export function GithubStats() {
-  const { data: stats, isLoading, isError } = useQuery({
+  const {
+    data: stats,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ['github-stats'],
     queryFn: () => getGithubStatsFn(),
   })
@@ -52,7 +56,9 @@ export function GithubStats() {
             <CardContent className="p-6 flex flex-col items-center justify-center text-center space-y-2">
               <item.icon className={`w-5 h-5 ${item.color}`} />
               <div className="space-y-1">
-                <p className="text-2xl font-bold">{item.value.toLocaleString()}</p>
+                <p className="text-2xl font-bold">
+                  {item.value.toLocaleString()}
+                </p>
                 <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
                   {item.label}
                 </p>

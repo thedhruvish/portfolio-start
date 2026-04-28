@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import Github from '@/components/svgs/Github'
 import {
   Tooltip,
@@ -12,6 +13,8 @@ import { cn } from '@/lib/utils'
 
 interface ProjectCardProps {
   project: {
+    id?: number
+    slug: string
     title: string
     description: string
     image?: string
@@ -45,7 +48,11 @@ export const ProjectCard = ({
         )}
       >
         {/* Project Image */}
-        <div className="relative aspect-video w-full overflow-hidden bg-muted border-b border-border/50">
+        <Link 
+          to="/projects/$slug" 
+          params={{ slug: project.slug }}
+          className="relative aspect-video w-full overflow-hidden bg-muted border-b border-border/50"
+        >
           {project.image ? (
             <img
               src={project.image}
@@ -57,14 +64,20 @@ export const ProjectCard = ({
               <span className="text-4xl font-bold opacity-20">Project</span>
             </div>
           )}
-        </div>
+        </Link>
 
         <div className="p-6 flex flex-col flex-grow">
           {/* Header */}
           <div className="flex items-start justify-between gap-4 mb-4">
-            <h3 className="text-xl font-bold tracking-tight group-hover:text-primary transition-colors line-clamp-2">
-              {project.title}
-            </h3>
+            <Link 
+              to="/projects/$slug" 
+              params={{ slug: project.slug }}
+              className="group/title flex-grow"
+            >
+              <h3 className="text-xl font-bold tracking-tight group-hover:text-primary group-hover/title:text-primary transition-colors line-clamp-2">
+                {project.title}
+              </h3>
+            </Link>
 
             <div className="flex items-center gap-2 shrink-0">
               {project.github && (

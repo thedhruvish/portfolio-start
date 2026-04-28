@@ -28,6 +28,7 @@ import { Route as AdminBlogsIndexRouteImport } from './routes/admin/blogs/index'
 import { Route as WebTagsIndexRouteImport } from './routes/_web/tags/index'
 import { Route as WebProjectsIndexRouteImport } from './routes/_web/projects/index'
 import { Route as WebBlogsIndexRouteImport } from './routes/_web/blogs/index'
+import { Route as AdminProjectsProjectIdRouteImport } from './routes/admin/projects_.$projectId'
 import { Route as AdminBlogsNewRouteImport } from './routes/admin/blogs/new'
 import { Route as WebTagsNameRouteImport } from './routes/_web/tags/$name'
 import { Route as WebProjectsSlugRouteImport } from './routes/_web/projects/$slug'
@@ -129,6 +130,11 @@ const WebBlogsIndexRoute = WebBlogsIndexRouteImport.update({
   path: '/blogs/',
   getParentRoute: () => WebRouteRoute,
 } as any)
+const AdminProjectsProjectIdRoute = AdminProjectsProjectIdRouteImport.update({
+  id: '/projects_/$projectId',
+  path: '/projects/$projectId',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminBlogsNewRoute = AdminBlogsNewRouteImport.update({
   id: '/blogs/new',
   path: '/blogs/new',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/projects/$slug': typeof WebProjectsSlugRoute
   '/tags/$name': typeof WebTagsNameRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
+  '/admin/projects/$projectId': typeof AdminProjectsProjectIdRoute
   '/blogs/': typeof WebBlogsIndexRoute
   '/projects/': typeof WebProjectsIndexRoute
   '/tags/': typeof WebTagsIndexRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/projects/$slug': typeof WebProjectsSlugRoute
   '/tags/$name': typeof WebTagsNameRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
+  '/admin/projects/$projectId': typeof AdminProjectsProjectIdRoute
   '/blogs': typeof WebBlogsIndexRoute
   '/projects': typeof WebProjectsIndexRoute
   '/tags': typeof WebTagsIndexRoute
@@ -231,6 +239,7 @@ export interface FileRoutesById {
   '/_web/projects/$slug': typeof WebProjectsSlugRoute
   '/_web/tags/$name': typeof WebTagsNameRoute
   '/admin/blogs/new': typeof AdminBlogsNewRoute
+  '/admin/projects_/$projectId': typeof AdminProjectsProjectIdRoute
   '/_web/blogs/': typeof WebBlogsIndexRoute
   '/_web/projects/': typeof WebProjectsIndexRoute
   '/_web/tags/': typeof WebTagsIndexRoute
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/tags/$name'
     | '/admin/blogs/new'
+    | '/admin/projects/$projectId'
     | '/blogs/'
     | '/projects/'
     | '/tags/'
@@ -284,6 +294,7 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/tags/$name'
     | '/admin/blogs/new'
+    | '/admin/projects/$projectId'
     | '/blogs'
     | '/projects'
     | '/tags'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/_web/projects/$slug'
     | '/_web/tags/$name'
     | '/admin/blogs/new'
+    | '/admin/projects_/$projectId'
     | '/_web/blogs/'
     | '/_web/projects/'
     | '/_web/tags/'
@@ -464,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WebBlogsIndexRouteImport
       parentRoute: typeof WebRouteRoute
     }
+    '/admin/projects_/$projectId': {
+      id: '/admin/projects_/$projectId'
+      path: '/projects/$projectId'
+      fullPath: '/admin/projects/$projectId'
+      preLoaderRoute: typeof AdminProjectsProjectIdRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/blogs/new': {
       id: '/admin/blogs/new'
       path: '/blogs/new'
@@ -544,6 +563,7 @@ interface AdminRouteRouteChildren {
   AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminBlogsNewRoute: typeof AdminBlogsNewRoute
+  AdminProjectsProjectIdRoute: typeof AdminProjectsProjectIdRoute
   AdminBlogsIndexRoute: typeof AdminBlogsIndexRoute
   AdminContactsIndexRoute: typeof AdminContactsIndexRoute
   AdminBlogsIdEditRoute: typeof AdminBlogsIdEditRoute
@@ -557,6 +577,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminSubscribersRoute: AdminSubscribersRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminBlogsNewRoute: AdminBlogsNewRoute,
+  AdminProjectsProjectIdRoute: AdminProjectsProjectIdRoute,
   AdminBlogsIndexRoute: AdminBlogsIndexRoute,
   AdminContactsIndexRoute: AdminContactsIndexRoute,
   AdminBlogsIdEditRoute: AdminBlogsIdEditRoute,

@@ -84,11 +84,14 @@ export const updateProfileFn = createServerFn({ method: 'POST' })
 export const ProjectSchema = z.object({
   id: z.number().optional(),
   title: z.string().min(1),
+  slug: z.string().min(1),
   description: z.string().min(1),
+  details: z.string().optional(),
   image: z.string().optional(),
   github: z.string().optional(),
   link: z.string().optional(),
   tech: z.array(z.string()).optional(),
+  isPublished: z.boolean().default(false),
   order: z.number(),
 })
 
@@ -98,11 +101,27 @@ export const getProjectsFn = createServerFn({ method: 'GET' }).handler(
   },
 )
 
+export const getProjectByIdFn = createServerFn({ method: 'GET' })
+  .inputValidator((data: number) => z.number().parse(data))
+  .handler(async ({ data: id }) => {
+    const result = await db.select().from(projects).where(eq(projects.id, id)).limit(1)
+    return result[0] || null
+  })
+
 export const createProjectFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) =>
     ProjectSchema.omit({ id: true }).parse(data),
   )
   .handler(async ({ data }) => {
+    // Check for slug uniqueness
+    const existing = await db.query.projects.findFirst({
+      where: eq(projects.slug, data.slug),
+    })
+
+    if (existing) {
+      throw new Error(`Slug "${data.slug}" is already in use`)
+    }
+
     await db.insert(projects).values(data)
     return { success: true }
   })
@@ -111,6 +130,16 @@ export const updateProjectFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => ProjectSchema.parse(data))
   .handler(async ({ data }) => {
     if (!data.id) throw new Error('ID required for update')
+
+    // Check for slug uniqueness (excluding current project)
+    const existing = await db.query.projects.findFirst({
+      where: and(eq(projects.slug, data.slug), ne(projects.id, data.id)),
+    })
+
+    if (existing) {
+      throw new Error(`Slug "${data.slug}" is already in use`)
+    }
+
     await db.update(projects).set(data).where(eq(projects.id, data.id))
     return { success: true }
   })
