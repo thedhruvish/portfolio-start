@@ -1,6 +1,6 @@
 export default function JavaScript() {
   return (
-    <svg viewBox="0 0 128 128">
+    <svg viewBox="0 0 128 128" height="22" width="22">
       <path fill="#F0DB4F" d="M1.408 1.408h125.184v125.185H1.408z"></path>
       <path
         fill="#323330"

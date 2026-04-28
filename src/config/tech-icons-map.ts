@@ -27,8 +27,13 @@ import TailwindCss from '@/components/svgs/technologies/TailwindCss'
 import ThreeJs from '@/components/svgs/technologies/ThreeJs'
 import TypeScript from '@/components/svgs/technologies/TypeScript'
 import Vercel from '@/components/svgs/technologies/Vercel'
+import Cloudflare from '@/components/svgs/technologies/Cloudflare'
+import Hono from '@/components/svgs/technologies/Hono'
+import VSCode from '@/components/svgs/technologies/VSCode'
+import WebSocket from '@/components/svgs/technologies/WebSocket'
+import TanStack from '@/components/svgs/technologies/TanStack'
 
-export const TechIconsMap: Record<string, React.ComponentType> = {
+export const TechIconsMap: Record<string, React.ComponentType<{ className?: string }>> = {
   AWS,
   Appwrite,
   BootStrap,
@@ -58,4 +63,9 @@ export const TechIconsMap: Record<string, React.ComponentType> = {
   ThreeJs,
   TypeScript,
   Vercel,
+  Cloudflare,
+  Hono,
+  VSCode,
+  WebSocket,
+  TanStack,
 }

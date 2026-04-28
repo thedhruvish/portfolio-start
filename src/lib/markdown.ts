@@ -9,6 +9,11 @@ import rehypeStringify from 'rehype-stringify'
 import rehypeHighlight from 'rehype-highlight'
 import { visit } from 'unist-util-visit'
 import matter from 'gray-matter'
+import { Buffer } from 'buffer'
+
+if (typeof window !== 'undefined' && !window.Buffer) {
+  window.Buffer = Buffer
+}
 
 export async function markdownToHtml(markdown: string, baseUrl?: string) {
   // Strip frontmatter if present

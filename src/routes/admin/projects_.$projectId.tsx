@@ -44,6 +44,8 @@ import {
 import { MarkdownEditor } from '@/components/MarkdownEditor'
 import { Switch } from '@/components/ui/switch'
 
+import { TechIconsMap } from '@/config/tech-icons-map'
+
 export const Route = createFileRoute('/admin/projects_/$projectId')({
   loader: async ({ params }) => {
     const { projectId } = params
@@ -61,33 +63,41 @@ function ProjectEditor() {
   const router = useRouter()
 
   const form = useForm({
-    defaultValues: project || {
-      title: '',
-      slug: '',
-      description: '',
-      details: '',
-      image: '',
-      github: '',
-      link: '',
-      tech: [],
-      isPublished: false,
-      order: 0,
+    defaultValues: {
+      title: project?.title || '',
+      slug: project?.slug || '',
+      description: project?.description || '',
+      details: project?.details || '',
+      details_url: project?.details_url || '',
+      image: project?.image || '',
+      github: project?.github || '',
+      link: project?.link || '',
+      tech: project?.tech || [],
+      isPublished: project?.isPublished || false,
+      order: project?.order || 0,
     },
     validators: {
       onSubmit: ProjectSchema,
     },
     onSubmit: async ({ value }) => {
+      console.log('Form Submit Triggered', { value, projectId: project?.id })
       try {
         if (project?.id) {
-          await updateProjectFn({ data: { ...value, id: project.id } })
-          toast.success('Project updated')
+          const payload = { ...value, id: project.id }
+          console.log('Calling updateProjectFn with:', payload)
+          await updateProjectFn({ data: payload })
+          toast.success('Project updated successfully')
         } else {
+          console.log('Calling createProjectFn with:', value)
           await createProjectFn({ data: value })
-          toast.success('Project created')
+          toast.success('Project created successfully')
         }
         router.navigate({ to: '/admin/projects' })
+        router.invalidate()
       } catch (error: any) {
-        toast.error(error.message || 'Failed to save project')
+        console.error('Submission Error:', error)
+        const errorMessage = error?.message || 'Check form for errors'
+        toast.error(`Save failed: ${errorMessage}`)
       }
     },
   })
@@ -203,7 +213,9 @@ function ProjectEditor() {
                 name="details_url"
                 children={(field) => (
                   <ShadcnField className="gap-2">
-                    <ShadcnFieldLabel>Details URL (External Markdown)</ShadcnFieldLabel>
+                    <ShadcnFieldLabel>
+                      Details URL (External Markdown)
+                    </ShadcnFieldLabel>
                     <Input
                       name={field.name}
                       value={field.state.value || ''}
@@ -385,6 +397,7 @@ function CardSection({
   )
 }
 
+const availableTech = Object.keys(TechIconsMap).sort()
 // Reusing TechStackSelector from existing projects.tsx
 function TechStackSelector({
   value = [],
@@ -394,37 +407,6 @@ function TechStackSelector({
   onChange: (val: Array<string>) => void
 }) {
   const [open, setOpen] = useState(false)
-  const availableTech = [
-    'AWS',
-    'Appwrite',
-    'BootStrap',
-    'Bun',
-    'CSS',
-    'ExpoApp',
-    'ExpressJs',
-    'Figma',
-    'Github',
-    'Html',
-    'JavaScript',
-    'MDXIcon',
-    'MongoDB',
-    'Motion',
-    'NestJs',
-    'Netlify',
-    'NextJs',
-    'NodeJs',
-    'PostgreSQL',
-    'Postman',
-    'Prisma',
-    'ReactIcon',
-    'Sanity',
-    'Shadcn',
-    'SocketIo',
-    'TailwindCss',
-    'ThreeJs',
-    'TypeScript',
-    'Vercel',
-  ]
 
   return (
     <div className="space-y-4">

@@ -5,6 +5,7 @@ export default function Vercel({ className }: { className?: string }) {
       viewBox="0 0 128 128"
       className={className}
       fill="currentColor"
+      height="22" width="22"
     >
       <path d="M64.002 8.576 128 119.424H0Zm0 0"></path>
     </svg>

@@ -7,6 +7,7 @@ export default function ThreeJs({ className }: { className?: string }) {
       viewBox="0 0 128 128"
       className={className}
       fill="currentColor"
+      height="22" width="22"
     >
       <g color="currentColor">
         <path

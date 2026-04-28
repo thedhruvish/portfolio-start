@@ -86,12 +86,12 @@ export const ProjectSchema = z.object({
   title: z.string().min(1),
   slug: z.string().min(1),
   description: z.string().min(1),
-  details: z.string().optional(),
-  details_url: z.string().url().optional().or(z.literal('')),
-  image: z.string().optional(),
-  github: z.string().optional(),
-  link: z.string().optional(),
-  tech: z.array(z.string()).optional(),
+  details: z.string().nullable().optional(),
+  details_url: z.string().nullable().optional(),
+  image: z.string().nullable().optional(),
+  github: z.string().nullable().optional(),
+  link: z.string().nullable().optional(),
+  tech: z.array(z.string()).nullable().optional(),
   isPublished: z.boolean().default(false),
   order: z.number(),
 })
@@ -128,21 +128,40 @@ export const createProjectFn = createServerFn({ method: 'POST' })
   })
 
 export const updateProjectFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: unknown) => ProjectSchema.parse(data))
-  .handler(async ({ data }) => {
-    if (!data.id) throw new Error('ID required for update')
-
-    // Check for slug uniqueness (excluding current project)
-    const existing = await db.query.projects.findFirst({
-      where: and(eq(projects.slug, data.slug), ne(projects.id, data.id)),
-    })
-
-    if (existing) {
-      throw new Error(`Slug "${data.slug}" is already in use`)
+  .inputValidator((data: unknown) => {
+    try {
+      return ProjectSchema.parse(data)
+    } catch (e: any) {
+      console.error('Validation error in updateProjectFn:', e.errors)
+      throw e
     }
+  })
+  .handler(async ({ data }) => {
+    console.log('Updating project with data:', data)
+    const { id, ...updateData } = data
+    if (!id) throw new Error('ID required for update')
 
-    await db.update(projects).set(data).where(eq(projects.id, data.id))
-    return { success: true }
+    try {
+      // Check for slug uniqueness (excluding current project)
+      const existing = await db.query.projects.findFirst({
+        where: and(eq(projects.slug, data.slug), ne(projects.id, id)),
+      })
+
+      if (existing) {
+        console.error('Slug already in use:', data.slug)
+        throw new Error(`Slug "${data.slug}" is already in use`)
+      }
+
+      const result = await db
+        .update(projects)
+        .set(updateData)
+        .where(eq(projects.id, id))
+      console.log('Update result:', result)
+      return { success: true }
+    } catch (err) {
+      console.error('Database error in updateProjectFn:', err)
+      throw err
+    }
   })
 
 export const deleteProjectFn = createServerFn({ method: 'POST' })

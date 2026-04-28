@@ -1,6 +1,6 @@
 export default function MongoDB() {
   return (
-    <svg viewBox="0 0 128 128">
+    <svg viewBox="0 0 128 128" height="22" width="22">
       <path
         fillRule="evenodd"
         clipRule="evenodd"

@@ -6,6 +6,8 @@ export default function Sanity({ className }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 128 128"
       className={className}
+      height="22"
+      width="22"
     >
       <rect fill="#F03E2F" height="128" width="128"></rect>
       <path

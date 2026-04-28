@@ -1,0 +1,80 @@
+[
+  {
+    "title": "Prakrushi",
+    "slug": "prakrushi",
+    "description": "Prakrushi is a transparent marketplace connecting conscious families with responsible farmers. Browse fresh produce, compare prices, and build smart grocery lists directly from the farm.",
+    "details": "#prakrushi",
+    "link": "https://app.prakrushi.com",
+    "isPublished": true,
+    "order": 1
+  },
+  {
+    "title": "Storeone",
+    "slug": "storeone-cloud",
+    "description": "An open-source, bring-your-own-storage platform that connects Google Drive and S3-compatible clouds. Store files in your own accounts, stay in control, and avoid vendor lock-in forever.",
+    "details_url": "https://raw.githubusercontent.com/thedhruvish/build-own-mail-server/refs/heads/main/README.md",
+    "image": "https://storeone.cloud/og-image.png",
+    "github": "https://github.com/thedhruvish/storeone",
+    "link": "https://storeone.cloud/?utm_source=dhruvish.in",
+    "isPublished": true,
+    "order": 2
+  },
+
+  {
+    "title": "sporty-real-time",
+    "slug": " sporty-real-time",
+    "description": "A Real Time Sports Web app that are the give a Real time score and event update using webscoket",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/WebSocket_colored_logo.svg/500px-WebSocket_colored_logo.svg.png",
+    "github": "https://github.com/thedhruvish/sporty-real-time",
+    "details_url": "https://raw.githubusercontent.com/thedhruvish/sporty-real-time/refs/heads/main/README.md",
+    "isPublished": true,
+    "order": 3
+  },
+  {
+    "title": "CI CD server",
+    "slug": "ci-cd-server",
+    "description": "Deploy your projects, and sends status notifications via Telegram.",
+    "image": "https://www.opsmx.com/blog/wp-content/uploads/2022/03/Standard-DevOps-CICD-980x462.png",
+    "github": "https://github.com/thedhruvish/ci-cd-server",
+    "details_url": "https://raw.githubusercontent.com/thedhruvish/ci-cd-server/refs/heads/main/README.md",
+    "link": "",
+    "tech": [],
+    "isPublished": true,
+    "order": 4
+  },
+  {
+    "title": "Mail Server",
+    "slug": "build-own-mail-server",
+    "description": "A lightweight, self-hosted mail server built with Node.js and TypeScript, featuring an SMTP server for receiving emails and a web-based dashboard to view, search, and send messages.",
+    "details": "",
+    "image": "",
+    "github": "https://github.com/thedhruvish/build-own-mail-server",
+    "details_url": "https://raw.githubusercontent.com/thedhruvish/build-own-mail-server/refs/heads/main/README.md",
+    "link": "",
+    "tech": [],
+    "isPublished": true,
+    "order": 5
+  },
+  {
+    "title": "YouCS",
+    "slug": "you-can-speak",
+    "description": "Master any conversation. YOUcs provides AI-driven practice and instant feedback to boost your speaking confidence.",
+    "details": "",
+    "image": "https://youcs.dhruvish.in/logo-png.png",
+    "link": "https://youcs.dhruvish.in/?utm_source=dhruvish.in",
+    "tech": [],
+    "isPublished": true,
+    "order": 6
+  },
+  {
+    "title": "Do not Code",
+    "slug": "do-not-code",
+    "description": "Watch YouTube videos and Shorts directly within AI code editor. Take breaks, find inspiration, and recharge without ever leaving your development workspace.",
+    "details": "",
+    "image": "https://ik.imagekit.io/donotcode/demo-1.png",
+    "link": "https://do-not-code.dhruvish.in/?utm_source=dhruvish.in",
+    "tech": [],
+    "isPublished": true,
+    "order": 7
+  }
+]
