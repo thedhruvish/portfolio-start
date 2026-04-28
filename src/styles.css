@@ -5,6 +5,19 @@
 @import 'highlight.js/styles/github-dark.css';
 @plugin '@tailwindcss/typography';
 
+/* Remove automatic backticks from inline code in prose */
+.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::before {
+  content: "" !important;
+}
+.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))::after {
+  content: "" !important;
+}
+
+/* Style inline code to look better */
+.prose :where(code):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  @apply bg-muted px-1.5 py-0.5 rounded-md font-medium text-primary;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

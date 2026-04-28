@@ -8,6 +8,7 @@ export const projects = pgTable(
     slug: text('slug').notNull().unique(),
     description: text('description').notNull(),
     details: text('details'),
+    details_url: text('details_url'),
     image: text('image'),
     github: text('github'),
     link: text('link'),

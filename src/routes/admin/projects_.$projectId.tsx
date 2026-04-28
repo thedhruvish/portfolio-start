@@ -200,6 +200,23 @@ function ProjectEditor() {
               />
 
               <form.Field
+                name="details_url"
+                children={(field) => (
+                  <ShadcnField className="gap-2">
+                    <ShadcnFieldLabel>Details URL (External Markdown)</ShadcnFieldLabel>
+                    <Input
+                      name={field.name}
+                      value={field.state.value || ''}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      placeholder="https://raw.githubusercontent.com/.../readme.md"
+                    />
+                    <ShadcnFieldError errors={field.state.meta.errors} />
+                  </ShadcnField>
+                )}
+              />
+
+              <form.Field
                 name="description"
                 children={(field) => (
                   <ShadcnField className="gap-2">
@@ -226,6 +243,7 @@ function ProjectEditor() {
                   <MarkdownEditor
                     value={field.state.value || ''}
                     onChange={(val) => field.handleChange(val)}
+                    detailsUrl={form.getFieldValue('details_url')}
                     placeholder="Write your project details here..."
                   />
                 )}

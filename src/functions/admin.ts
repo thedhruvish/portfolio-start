@@ -87,6 +87,7 @@ export const ProjectSchema = z.object({
   slug: z.string().min(1),
   description: z.string().min(1),
   details: z.string().optional(),
+  details_url: z.string().url().optional().or(z.literal('')),
   image: z.string().optional(),
   github: z.string().optional(),
   link: z.string().optional(),

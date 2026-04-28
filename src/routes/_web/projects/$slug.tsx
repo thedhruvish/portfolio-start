@@ -16,7 +16,21 @@ export const Route = createFileRoute('/_web/projects/$slug')({
     if (!project) {
       throw notFound()
     }
-    const contentHtml = await markdownToHtml(project.details || '')
+
+    let rawMarkdown = project.details || ''
+
+    if (project.details_url) {
+      try {
+        const response = await fetch(project.details_url)
+        if (response.ok) {
+          rawMarkdown = await response.text()
+        }
+      } catch (error) {
+        console.error('Failed to fetch remote markdown:', error)
+      }
+    }
+
+    const contentHtml = await markdownToHtml(rawMarkdown, project.details_url || undefined)
     return { project, contentHtml }
   },
   head: ({ loaderData }) => {

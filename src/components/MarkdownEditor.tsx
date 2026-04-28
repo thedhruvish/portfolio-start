@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 interface MarkdownEditorProps {
   value: string
   onChange: (value: string) => void
+  detailsUrl?: string
   placeholder?: string
   className?: string
 }
@@ -15,6 +16,7 @@ interface MarkdownEditorProps {
 export function MarkdownEditor({
   value,
   onChange,
+  detailsUrl,
   placeholder,
   className,
 }: MarkdownEditorProps) {
@@ -23,9 +25,21 @@ export function MarkdownEditor({
 
   useEffect(() => {
     if (activeTab === 'preview') {
-      markdownToHtml(value).then(setHtml)
+      const getMarkdown = async () => {
+        if (detailsUrl) {
+          try {
+            const res = await fetch(detailsUrl)
+            if (res.ok) return await res.text()
+          } catch (e) {
+            console.error('Preview fetch failed', e)
+          }
+        }
+        return value
+      }
+
+      getMarkdown().then(md => markdownToHtml(md, detailsUrl).then(setHtml))
     }
-  }, [value, activeTab])
+  }, [value, activeTab, detailsUrl])
 
   return (
     <div className={cn('flex flex-col gap-2', className)}>

@@ -8,8 +8,12 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeStringify from 'rehype-stringify'
 import rehypeHighlight from 'rehype-highlight'
 import { visit } from 'unist-util-visit'
+import matter from 'gray-matter'
 
-export async function markdownToHtml(markdown: string) {
+export async function markdownToHtml(markdown: string, baseUrl?: string) {
+  // Strip frontmatter if present
+  const { content } = matter(markdown)
+
   const result = await unified()
     .use(remarkParse)
     .use(remarkGfm)
@@ -37,10 +41,21 @@ export async function markdownToHtml(markdown: string) {
             }
           }
         }
+
+        // Handle relative image paths
+        if (node.tagName === 'img' && baseUrl) {
+          const src = node.properties?.src || ''
+          if (!src.startsWith('http') && !src.startsWith('//') && !src.startsWith('data:')) {
+            const baseDir = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1)
+            const cleanSrc = src.startsWith('./') ? src.slice(2) : src.startsWith('/') ? src.slice(1) : src
+            node.properties.src = baseDir + cleanSrc
+          }
+        }
       })
     })
     .use(rehypeStringify)
-    .process(markdown)
+    .process(content)
 
   return result.toString()
 }
+
