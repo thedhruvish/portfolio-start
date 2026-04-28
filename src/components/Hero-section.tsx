@@ -42,9 +42,6 @@ export const HeroSection = ({ profile }: HeroSectionProps) => {
         }}
       />
 
-      {/* Ensure content is above the gradient */}
-      <div className="absolute  inset-0 z-0 bg-linear-to-b from-background/30 via-background/80 to-background" />
-
       {/* Text Content */}
       <motion.div
         variants={containerVariants}
@@ -88,14 +85,14 @@ export const HeroSection = ({ profile }: HeroSectionProps) => {
           >
             Get in touch
           </Link>
-          {/* <a
+          <a
             href="/dhruvish-cv.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="rounded-lg border border-input bg-transparent px-6 py-3 font-medium shadow-sm transition-transform hover:scale-105 hover:bg-accent hover:text-accent-foreground hover:shadow-md"
           >
             Download CV
-          </a> */}
+          </a>
         </motion.div>
       </motion.div>
 
