@@ -121,7 +121,7 @@ function RouteComponent() {
           fallback={
             <section className="pt-10 scroll-mt-24">
               <div className="mb-10 h-10 w-48 animate-pulse rounded bg-muted" />
-              <ExperiencesSkeleton />
+              <ExperiencesSkeleton count={1} />
             </section>
           }
         >
@@ -151,8 +151,9 @@ function RouteComponent() {
               </h2>
               {selectedTech && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Showing projects built with <span className="font-bold text-primary">{selectedTech}</span>
-                  <button 
+                  Showing projects built with{' '}
+                  <span className="font-bold text-primary">{selectedTech}</span>
+                  <button
                     onClick={() => setSelectedTech(null)}
                     className="ml-2 underline hover:text-foreground"
                   >
@@ -177,35 +178,38 @@ function RouteComponent() {
             }
           >
             <Await promise={projects}>
-                {(data) => {
-                  const filtered = selectedTech 
-                    ? data.filter(p => p.tech?.includes(selectedTech))
-                    : data
+              {(data) => {
+                const filtered = selectedTech
+                  ? data.filter((p) => p.tech?.includes(selectedTech))
+                  : data
 
-                  const displayProjects = filtered.slice(0, 3)
-                  const hasMore = filtered.length > 3
+                const displayProjects = filtered.slice(0, 3)
+                const hasMore = filtered.length > 3
 
-                  return (
-                    <div className="space-y-10">
-                      <Projects 
-                        projects={displayProjects} 
-                        selectedTech={selectedTech}
-                        onTechSelect={setSelectedTech}
-                      />
+                return (
+                  <div className="space-y-10">
+                    <Projects
+                      projects={displayProjects}
+                      selectedTech={selectedTech}
+                      onTechSelect={setSelectedTech}
+                    />
 
-                      {hasMore && (
-                        <div className="flex justify-center pt-4">
-                          <Button variant="outline" asChild className="rounded-full px-8">
-                            <Link to="/projects">
-                              Show more projects
-                            </Link>
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )
-                }}
-              </Await>          </Suspense>
+                    {hasMore && (
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          variant="outline"
+                          asChild
+                          className="rounded-full px-8"
+                        >
+                          <Link to="/projects">Show more projects</Link>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                )
+              }}
+            </Await>{' '}
+          </Suspense>
         </section>
 
         {/* Latest Blogs Section */}

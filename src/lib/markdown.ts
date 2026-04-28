@@ -9,7 +9,7 @@ import rehypeStringify from 'rehype-stringify'
 import rehypeHighlight from 'rehype-highlight'
 import { visit } from 'unist-util-visit'
 import matter from 'gray-matter'
-import { Buffer } from 'buffer'
+import { Buffer } from 'node:buffer'
 
 if (typeof window !== 'undefined' && !window.Buffer) {
   window.Buffer = Buffer
@@ -50,9 +50,17 @@ export async function markdownToHtml(markdown: string, baseUrl?: string) {
         // Handle relative image paths
         if (node.tagName === 'img' && baseUrl) {
           const src = node.properties?.src || ''
-          if (!src.startsWith('http') && !src.startsWith('//') && !src.startsWith('data:')) {
+          if (
+            !src.startsWith('http') &&
+            !src.startsWith('//') &&
+            !src.startsWith('data:')
+          ) {
             const baseDir = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1)
-            const cleanSrc = src.startsWith('./') ? src.slice(2) : src.startsWith('/') ? src.slice(1) : src
+            const cleanSrc = src.startsWith('./')
+              ? src.slice(2)
+              : src.startsWith('/')
+                ? src.slice(1)
+                : src
             node.properties.src = baseDir + cleanSrc
           }
         }
@@ -63,4 +71,3 @@ export async function markdownToHtml(markdown: string, baseUrl?: string) {
 
   return result.toString()
 }
-
