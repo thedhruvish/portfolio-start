@@ -5,9 +5,13 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Buffer } from 'buffer'
+import Clarity from '@microsoft/clarity'
+
 import appCss from '../styles.css?url'
 import { ThemeProvider } from '@/provider/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
+
+Clarity.init(import.meta.env.VITE_CLARITY_ID)
 
 if (typeof window !== 'undefined') {
   window.Buffer = Buffer
