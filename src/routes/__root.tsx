@@ -9,7 +9,7 @@ import { Buffer } from 'buffer'
 import appCss from '../styles.css?url'
 import { ThemeProvider } from '@/provider/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
-import '@/lib/clarity-utils'
+import '@/lib/clarity-utils.client'
 
 if (typeof window !== 'undefined') {
   window.Buffer = Buffer
